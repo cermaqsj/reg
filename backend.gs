@@ -5,12 +5,14 @@ const SHEET_NAME_VIEW = "Resumen_Diario";
 function setupSpreadsheet() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   
+  // 1. Setup Database Sheet
   let sheetDB = ss.getSheetByName(SHEET_NAME_DB);
   if (!sheetDB) {
     sheetDB = ss.getSheetByName("Hoja 1") || ss.insertSheet(SHEET_NAME_DB);
     if (sheetDB) sheetDB.setName(SHEET_NAME_DB);
   }
   
+  // Create Headers if empty
   if (sheetDB.getRange("A1").getValue() === "") {
     const headers = [
       "Timestamp", "Responsable", 
@@ -23,98 +25,70 @@ function setupSpreadsheet() {
       "D_Gen2_HRS", "D_Gen2_KW", "D_Gen2_Lts", 
       "D_Gen3_HRS", "D_Gen3_KW", "D_Gen3_Lts"
     ];
+    // Write headers
     sheetDB.getRange(1, 1, 1, headers.length).setValues([headers]);
+    // Style headers
     sheetDB.getRange(1, 1, 1, headers.length).setFontWeight("bold").setBackground("#cfe2f3");
     sheetDB.setFrozenRows(1);
   }
 
+  // 2. Setup Dashboard (View) Sheet - OPTIONAL but helpful
   let sheetView = ss.getSheetByName(SHEET_NAME_VIEW);
   if (!sheetView) {
     sheetView = ss.insertSheet(SHEET_NAME_VIEW);
   }
-  
-  sheetView.clear();
-  sheetView.getRange("B1:E1").merge().setValue("📊 VISOR DE TURNO ACTUAL").setFontSize(14).setFontWeight("bold").setHorizontalAlignment("center").setBackground("#0f172a").setFontColor("white");
-  
-  const dbRef = `'${SHEET_NAME_DB}'`; 
-  const lastRowFormula = `LOOKUP(2,1/(${dbRef}!A:A<>""),ROW(${dbRef}!A:A))`; 
-  
-  const etiquetas = [
-    {cell: "A3", val: "📅 FECHA"}, {cell: "C3", val: "👤 RESPONSABLE"},
-    {cell: "A5", val: "💨 OXÍGENO"}, {cell: "C5", val: "⚡ ENERGÍA"},
-    {cell: "A6", val: "Compresor KW"}, {cell: "A7", val: "Compresor M3"}, {cell: "A8", val: "Compresor HRS"},
-    {cell: "A9", val: "Gen 1 HRS"}, {cell: "A10", val: "Gen 1 M3"},
-    {cell: "A11", val: "Gen 2 HRS"}, {cell: "A12", val: "Gen 2 M3"},
-    {cell: "A13", val: "Consumo Fry"}, {cell: "A14", val: "Consumo Smolt"},
-    
-    {cell: "C6", val: "Voltaje V12"}, {cell: "C7", val: "Voltaje V23"}, {cell: "C8", val: "Voltaje V31"},
-    {cell: "C9", val: "Corriente I1"}, {cell: "C10", val: "Corriente I2"}, {cell: "C11", val: "Corriente I3"}, {cell: "C12", val: "Corriente IN"},
-    {cell: "C13", val: "Sum Potencia KW"}, {cell: "C14", val: "Energia Activa GW"},
-    
-    {cell: "A16", val: "⛽ DIESEL G1"}, {cell: "C16", val: "⛽ DIESEL G2"}, {cell: "E16", val: "⛽ DIESEL G3"},
-    {cell: "A17", val: "G1 HRS"}, {cell: "A18", val: "G1 KW"}, {cell: "A19", val: "G1 Lts"},
-    {cell: "C17", val: "G2 HRS"}, {cell: "C18", val: "G2 KW"}, {cell: "C19", val: "G2 Lts"},
-    {cell: "E17", val: "G3 HRS"}, {cell: "E18", val: "G3 KW"}, {cell: "E19", val: "G3 Lts"},
-  ];
-  
-  etiquetas.forEach(item => sheetView.getRange(item.cell).setValue(item.val).setFontWeight("bold"));
-  
-  const formulaPrefix = `=INDEX(${dbRef}!$A:$AC, MATCH(MAX(${dbRef}!$A:$A), ${dbRef}!$A:$A, 0), `;
-  
-  const map = {
-    "B3": 1, "D3": 2,
-    "B6": 3, "B7": 4, "B8": 5, "B9": 6, "B10": 7, "B11": 8, "B12": 9, "B13": 10, "B14": 11,
-    "D6": 12, "D7": 13, "D8": 14, "D9": 15, "D10": 16, "D11": 17, "D12": 18, "D13": 19, "D14": 20,
-    "B17": 21, "B18": 22, "B19": 23,
-    "D17": 24, "D18": 25, "D19": 26,
-    "F17": 27, "F18": 28, "F19": 29 
-  };
-  
-  for (let cell in map) {
-    sheetView.getRange(cell).setFormula(formulaPrefix + map[cell] + ")");
-    sheetView.getRange(cell).setHorizontalAlignment("center");
-  }
-  
-  sheetView.getRange("A5:B14").setBorder(true, true, true, true, null, null).setBackground("#e6f4ea");
-  sheetView.getRange("C5:D14").setBorder(true, true, true, true, null, null).setBackground("#fff2cc");
-  sheetView.getRange("A16:F19").setBorder(true, true, true, true, null, null).setBackground("#f4cccc");
-  
-  sheetView.autoResizeColumns(1, 6);
 }
+
+// --- API HANDLING ---
 
 function doPost(e) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getSheetByName(SHEET_NAME_DB) || ss.getSheets()[0]; 
+  const sheet = ss.getSheetByName(SHEET_NAME_DB);
   
-  if (!e.postData) return ContentService.createTextOutput("Error: No data sent");
+  // Standard JSON Return Helper
+  const returnJSON = (data) => ContentService.createTextOutput(JSON.stringify(data)).setMimeType(ContentService.MimeType.JSON);
 
-  const data = JSON.parse(e.postData.contents);
+  if (!sheet) return returnJSON({result: "error", message: "Hoja de datos no encontrada"});
+  if (!e.postData) return returnJSON({result: "error", message: "No data received"});
+
   const lock = LockService.getScriptLock();
-  lock.tryLock(10000);
+  lock.tryLock(10000); // Wait up to 10s for other users
 
   try {
+    const data = JSON.parse(e.postData.contents);
+    
+    // --- ADMIN EDIT MODE ---
     if (data.modo === "ADMIN") {
       if (data.password === PASSWORD_ADMIN) {
         const ultimaFila = sheet.getLastRow();
+        if (ultimaFila < 2) return returnJSON({result: "error", message: "No hay registros para editar"});
+        
+        // Update last row (excluding timestamp at col 1)
         const filaActualizada = [data.responsable, ...data.valores];
+        // Timestmap is Col 1. Data starts at Col 2.
         sheet.getRange(ultimaFila, 2, 1, filaActualizada.length).setValues([filaActualizada]);
-        return ContentService.createTextOutput(JSON.stringify({result: "success", message: "Registro corregido"}));
+        
+        return returnJSON({result: "success", message: "Último registro corregido exitosamente"});
       } else {
-        return ContentService.createTextOutput(JSON.stringify({result: "error", message: "Clave incorrecta"}));
+        return returnJSON({result: "error", message: "Contraseña de Admin incorrecta"});
       }
     }
 
+    // --- NORMAL MODE ---
+    // Create row: Timestamp + Responsable + Values
     const nuevaFila = [new Date(), data.responsable, ...data.valores];
     sheet.appendRow(nuevaFila);
-    return ContentService.createTextOutput(JSON.stringify({result: "success", message: "Datos guardados"}));
+    
+    return returnJSON({result: "success", message: "Datos guardados"});
     
   } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({result: "error", message: err.toString()}));
+    return returnJSON({result: "error", message: "Error interno: " + err.toString()});
   } finally {
     lock.releaseLock();
   }
 }
 
+// Ping for Network Check
 function doGet(e) {
-  return ContentService.createTextOutput(JSON.stringify({status: "online"}));
+  return ContentService.createTextOutput(JSON.stringify({status: "online"})).setMimeType(ContentService.MimeType.JSON);
 }
