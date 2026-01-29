@@ -1,0 +1,154 @@
+:root {
+    --bg-color: #0f172a;
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --primary-color: #3b82f6;
+    --accent-color: #0ea5e9;
+    --text-color: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --input-bg: rgba(15, 23, 42, 0.6);
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(14, 165, 233, 0.15) 0%, transparent 40%);
+}
+
+.main-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px 15px;
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in-down { animation: fadeInDown 0.6s ease-out; }
+.fade-in-up { animation: fadeInUp 0.6s ease-out backwards; }
+
+/* Typography */
+.app-title {
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Glassmorphism Cards */
+.glass-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.card-header-custom {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+    color: var(--accent-color);
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 16px 16px 0 0;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Inputs */
+.custom-input {
+    background: var(--input-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: #fff !important;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.custom-input:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.custom-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.form-floating > label {
+    color: rgba(255, 255, 255, 0.5);
+}
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    color: var(--accent-color);
+}
+
+.section-subtitle {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    margin-top: 5px;
+    border-left: 2px solid var(--primary-color);
+    padding-left: 8px;
+}
+
+/* Generators */
+.generator-block {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 12px;
+}
+.gen-title {
+    font-size: 0.8rem;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+/* Buttons */
+.custom-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    border: none;
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.custom-btn:active {
+    transform: scale(0.98);
+}
+
+/* Modal */
+.glass-modal {
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+}
+
+/* Admin Trigger */
+.admin-trigger {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: color 0.3s;
+}
+.admin-trigger:hover {
+    color: rgba(255, 255, 255, 0.5);
+}
