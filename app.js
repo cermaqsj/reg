@@ -2,6 +2,13 @@
 const API_URL = "https://script.google.com/macros/s/AKfycby2iwsHrM03pBKy_pyKZh44TzebdsPLJDiisIJh0-jOv4HuDNShCF5SEe6zoMMVP-lQ/exec";
 const PASSWORD_ADMIN = "mantencioncermaq";
 
+// Check for SW updates
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload();
+    });
+}
+
 let appMode = "NORMAL";
 let adminPassword = "";
 
