@@ -187,8 +187,7 @@
             <div class="d-flex align-items-center gap-3">
                 <img src="Cermaq_logo2.png" alt="Cermaq" height="45" class="d-inline-block align-text-top filter-white">
                 <div class="border-start border-secondary ps-3 ms-2">
-                    <h1 class="h4 m-0 fw-bold text-gradient">MONITOR F1</h1>
-                    <small class="text-secondary text-uppercase letter-spacing-2">Sistema O2 y Energía</small>
+                    <h1 class="h5 m-0 fw-bold text-gradient text-uppercase letter-spacing-2">REGISTRO O2 Y ENERGÍA</h1>
                 </div>
             </div>
             <div class="d-flex align-items-center gap-4">
@@ -305,93 +304,104 @@
                 return item ? item[1] : '-';
             };
 
-            // REORGANIZED CATEGORIES
+            // REORGANIZED CATEGORIES v3
             const groups = [
                 {
-                    mainTitle: "SISTEMA DE OXÍGENO",
+                    mainTitle: "Sistema OXÍGENO",
                     mainIcon: "bi-wind",
                     subSections: [
                         {
-                            title: "Producción & Equipos",
+                            title: "Compresor O2",
                             items: [
-                                { label: "Compresor O2", val: findVal("O2 Comp KW"), unit: "KW" },
-                                { label: "Flujo Comp.", val: findVal("O2 Comp M3"), unit: "m³" },
-                                { label: "Gen 1", val: findVal("O2 Gen1 M3"), unit: "m³" },
-                                { label: "Gen 2", val: findVal("O2 Gen2 M3"), unit: "m³" }
+                                { label: "Hrs", val: findVal("O2 Comp HRS"), unit: "Hrs" },
+                                { label: "KW", val: findVal("O2 Comp KW"), unit: "KW" },
+                                { label: "m³ acumulado", val: findVal("O2 Comp M3"), unit: "m³" }
                             ]
                         },
                         {
-                            title: "Horas Operación",
+                            title: "Generador O2 1",
                             items: [
-                                { label: "Gen 1", val: findVal("O2 Gen1 HRS"), unit: "Hrs" },
-                                { label: "Gen 2", val: findVal("O2 Gen2 HRS"), unit: "Hrs" },
-                                { label: "Compresor", val: findVal("O2 Comp HRS"), unit: "Hrs" }
+                                { label: "Hrs", val: findVal("O2 Gen1 HRS"), unit: "Hrs" },
+                                { label: "m³ acumulado", val: findVal("O2 Gen1 M3"), unit: "m³" }
                             ]
                         },
                         {
-                            title: "Consumo Biomasa",
+                            title: "Generador O2 2",
                             items: [
-                                { label: "Fry", val: findVal("O2 Cons Fry"), unit: "" },
-                                { label: "Smolt", val: findVal("O2 Cons Smolt"), unit: "" }
+                                { label: "Hrs", val: findVal("O2 Gen2 HRS"), unit: "Hrs" },
+                                { label: "m³ acumulado", val: findVal("O2 Gen2 M3"), unit: "m³" }
                             ]
                         }
                     ]
                 },
                 {
-                    mainTitle: "RED ELÉCTRICA (Suministro)",
+                    mainTitle: "CONSUMO O2",
+                    mainIcon: "bi-graph-down-arrow",
+                    subSections: [
+                        {
+                            title: "Consumo Diario",
+                            items: [
+                                { label: "O2 Fry 1", val: findVal("O2 Cons Fry"), unit: "" },
+                                { label: "O2 Smolt 2", val: findVal("O2 Cons Smolt"), unit: "" }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    mainTitle: "RED ELÉCTRICA",
                     mainIcon: "bi-lightning-charge-fill",
                     subSections: [
                         {
-                            title: "Voltajes (V)",
+                            title: "UL-L (Volt)",
                             items: [
-                                { label: "L1 - L2", val: findVal("Red V12"), unit: "V" },
-                                { label: "L2 - L3", val: findVal("Red V23"), unit: "V" },
-                                { label: "L3 - L1", val: findVal("Red V31"), unit: "V" }
+                                { label: "V12", val: findVal("Red V12"), unit: "V" },
+                                { label: "V23", val: findVal("Red V23"), unit: "V" },
+                                { label: "V31", val: findVal("Red V31"), unit: "V" }
                             ]
                         },
                         {
-                            title: "Corrientes (A)",
+                            title: "I (HVA)",
                             items: [
-                                { label: "L1", val: findVal("Red I1"), unit: "A" },
-                                { label: "L2", val: findVal("Red I2"), unit: "A" },
-                                { label: "L3", val: findVal("Red I3"), unit: "A" }
+                                { label: "A1", val: findVal("Red I1"), unit: "A" },
+                                { label: "A2", val: findVal("Red I2"), unit: "A" },
+                                { label: "A3", val: findVal("Red I3"), unit: "A" }
                             ]
                         },
                         {
-                            title: "Potencia",
+                            title: "Potencia Total",
                             items: [
-                                { label: "Total Sump", val: findVal("Red SumP KW"), unit: "KW" },
-                                { label: "Total EA", val: findVal("Red EA GW"), unit: "GW" }
+                                { label: "P", val: findVal("Red SumP KW"), unit: "KW" },
+                                { label: "EA+", val: findVal("Red EA GW"), unit: "GW" }
                             ]
                         }
                     ]
                 },
                 {
-                    mainTitle: "RESPALDO DIÉSEL",
+                    mainTitle: "GENERADORES DIESEL",
                     mainIcon: "bi-fuel-pump-diesel",
                     subSections: [
                         {
                             title: "Generador 1",
                             items: [
-                                { label: "Potencia", val: findVal("D Gen1 KW"), unit: "KW" },
-                                { label: "Nivel", val: findVal("D Gen1 Lts"), unit: "Lts" },
-                                { label: "Horómetro", val: findVal("D Gen1 HRS"), unit: "Hrs" }
+                                { label: "Hrs", val: findVal("D Gen1 HRS"), unit: "Hrs" },
+                                { label: "KW", val: findVal("D Gen1 KW"), unit: "KW" },
+                                { label: "Consumo Diesel", val: findVal("D Gen1 Lts"), unit: "Lts" }
                             ]
                         },
                         {
                             title: "Generador 2",
                             items: [
-                                { label: "Potencia", val: findVal("D Gen2 KW"), unit: "KW" },
-                                { label: "Nivel", val: findVal("D Gen2 Lts"), unit: "Lts" },
-                                { label: "Horómetro", val: findVal("D Gen2 HRS"), unit: "Hrs" }
+                                { label: "Hrs", val: findVal("D Gen2 HRS"), unit: "Hrs" },
+                                { label: "KW", val: findVal("D Gen2 KW"), unit: "KW" },
+                                { label: "Consumo Diesel", val: findVal("D Gen2 Lts"), unit: "Lts" }
                             ]
                         },
                         {
                             title: "Generador 3",
                             items: [
-                                { label: "Potencia", val: findVal("D Gen3 KW"), unit: "KW" },
-                                { label: "Nivel", val: findVal("D Gen3 Lts"), unit: "Lts" },
-                                { label: "Horómetro", val: findVal("D Gen3 HRS"), unit: "Hrs" }
+                                { label: "Hrs", val: findVal("D Gen3 HRS"), unit: "Hrs" },
+                                { label: "KW", val: findVal("D Gen3 KW"), unit: "KW" },
+                                { label: "Consumo Diesel", val: findVal("D Gen3 Lts"), unit: "Lts" }
                             ]
                         }
                     ]
