@@ -25,11 +25,11 @@ const fieldIds = [
     'o2_gen2_hrs', 'o2_gen2_m3',
     'o2_cons_fry', 'o2_cons_smolt',
     'red_v12', 'red_v23', 'red_v31',
-    'red_i1', 'red_i2', 'red_i3', 'red_in',
+    'red_i1', 'red_i2', 'red_i3',
     'red_sump_kw', 'red_ea_gw',
-    'd_gen1_hrs', 'd_gen1_kw', 'd_gen1_lts',
-    'd_gen2_hrs', 'd_gen2_kw', 'd_gen2_lts',
-    'd_gen3_hrs', 'd_gen3_kw', 'd_gen3_lts'
+    'd_gen1_hrs', 'd_gen1_kw',
+    'd_gen2_hrs', 'd_gen2_kw',
+    'd_gen3_hrs', 'd_gen3_kw'
 ];
 
 window.onload = () => {
