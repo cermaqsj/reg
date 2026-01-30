@@ -13,8 +13,7 @@ function setupSpreadsheet() {
     sheetDB = ss.getSheetByName("Hoja 1") || ss.insertSheet(SHEET_NAME_DB);
     if (sheetDB) sheetDB.setName(SHEET_NAME_DB);
   }
-  
-  // Headers Master
+    // Headers Master
   const headers = [
       "Timestamp", "Responsable", 
       "O2_Comp_KW", "O2_Comp_M3", "O2_Comp_HRS", 
@@ -22,9 +21,9 @@ function setupSpreadsheet() {
       "O2_Cons_Fry", "O2_Cons_Smolt", 
       "Red_V12", "Red_V23", "Red_V31", "Red_I1", "Red_I2", "Red_I3", "Red_IN", 
       "Red_SumP_KW", "Red_EA_GW", 
-      "D_Gen1_HRS", "D_Gen1_KW", "D_Gen1_Lts", 
-      "D_Gen2_HRS", "D_Gen2_KW", "D_Gen2_Lts", 
-      "D_Gen3_HRS", "D_Gen3_KW", "D_Gen3_Lts"
+      "D_Gen1_HRS", "D_Gen1_KW", 
+      "D_Gen2_HRS", "D_Gen2_KW", 
+      "D_Gen3_HRS", "D_Gen3_KW"
   ];
   
   if (sheetDB.getRange("A1").getValue() === "") {
@@ -160,9 +159,9 @@ function updateDashboard(data) {
        "Red V12", "Red V23", "Red V31",
        "Red I1", "Red I2", "Red I3", "Red IN",
        "Red SumP KW", "Red EA GW",
-       "D Gen1 HRS", "D Gen1 KW", "D Gen1 Lts",
-       "D Gen2 HRS", "D Gen2 KW", "D Gen2 Lts",
-       "D Gen3 HRS", "D Gen3 KW", "D Gen3 Lts"
+       "D Gen1 HRS", "D Gen1 KW",
+       "D Gen2 HRS", "D Gen2 KW",
+       "D Gen3 HRS", "D Gen3 KW"
     ];
     
     // Write labels and values
@@ -201,8 +200,8 @@ function doGet(e) {
          const lastRow = sheetDB.getLastRow();
          // Col 2 = Responsable, Col 3+ = Values
          const responsable = sheetDB.getRange(lastRow, 2).getValue();
-         // 27 Data Columns
-         const valores = sheetDB.getRange(lastRow, 3, 1, 27).getValues()[0];
+         // 24 Data Columns (Removed 3 diesel Lts)
+         const valores = sheetDB.getRange(lastRow, 3, 1, 24).getValues()[0];
          
          // Update the view sheet so it's ready
          updateDashboard({
@@ -253,8 +252,8 @@ function manualInitDashboard() {
   const lastRow = sheetDB.getLastRow();
   // Col 1=Time, Col 2=Resp, Col 3...=Values
   const responsable = sheetDB.getRange(lastRow, 2).getValue();
-  // We have 27 value columns defined in headers
-  const valores = sheetDB.getRange(lastRow, 3, 1, 27).getValues()[0];
+  // We have 24 value columns defined in headers
+  const valores = sheetDB.getRange(lastRow, 3, 1, 24).getValues()[0];
   
   const data = {
     responsable: responsable,
