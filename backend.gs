@@ -1,20 +1,21 @@
 const PASSWORD_ADMIN = "mantencioncermaq";
 const SHEET_NAME_DB = "O2 y Energía"; 
 const SHEET_NAME_VIEW = "Resumen_Diario"; 
+const SHEET_NAME_O2 = "Historial_O2";
+const SHEET_NAME_ENERGY = "Historial_Energia";
 
 function setupSpreadsheet() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   
-  // 1. Setup Database Sheet
+  // 1. Setup Database Sheet (Master)
   let sheetDB = ss.getSheetByName(SHEET_NAME_DB);
   if (!sheetDB) {
     sheetDB = ss.getSheetByName("Hoja 1") || ss.insertSheet(SHEET_NAME_DB);
     if (sheetDB) sheetDB.setName(SHEET_NAME_DB);
   }
   
-  // Create Headers if empty
-  if (sheetDB.getRange("A1").getValue() === "") {
-    const headers = [
+  // Headers Master
+  const headers = [
       "Timestamp", "Responsable", 
       "O2_Comp_KW", "O2_Comp_M3", "O2_Comp_HRS", 
       "O2_Gen1_HRS", "O2_Gen1_M3", "O2_Gen2_HRS", "O2_Gen2_M3", 
@@ -24,15 +25,35 @@ function setupSpreadsheet() {
       "D_Gen1_HRS", "D_Gen1_KW", "D_Gen1_Lts", 
       "D_Gen2_HRS", "D_Gen2_KW", "D_Gen2_Lts", 
       "D_Gen3_HRS", "D_Gen3_KW", "D_Gen3_Lts"
-    ];
-    // Write headers
+  ];
+  
+  if (sheetDB.getRange("A1").getValue() === "") {
     sheetDB.getRange(1, 1, 1, headers.length).setValues([headers]);
-    // Style headers
     sheetDB.getRange(1, 1, 1, headers.length).setFontWeight("bold").setBackground("#cfe2f3");
     sheetDB.setFrozenRows(1);
   }
 
-  // 2. Setup Dashboard (View) Sheet - OPTIONAL but helpful
+  // 2. Setup History O2
+  let sheetO2 = ss.getSheetByName(SHEET_NAME_O2);
+  if (!sheetO2) {
+      sheetO2 = ss.insertSheet(SHEET_NAME_O2);
+      const headersO2 = ["Timestamp", "Responsable", ...headers.slice(2, 11)]; // O2 Cols
+      sheetO2.getRange(1, 1, 1, headersO2.length).setValues([headersO2]);
+      sheetO2.getRange(1, 1, 1, headersO2.length).setFontWeight("bold").setBackground("#e6f7ff");
+      sheetO2.setFrozenRows(1);
+  }
+
+  // 3. Setup History Energy
+  let sheetEnergy = ss.getSheetByName(SHEET_NAME_ENERGY);
+  if (!sheetEnergy) {
+      sheetEnergy = ss.insertSheet(SHEET_NAME_ENERGY);
+      const headersEnergy = ["Timestamp", "Responsable", ...headers.slice(11)]; // Energy Cols
+      sheetEnergy.getRange(1, 1, 1, headersEnergy.length).setValues([headersEnergy]);
+      sheetEnergy.getRange(1, 1, 1, headersEnergy.length).setFontWeight("bold").setBackground("#fff7e6");
+      sheetEnergy.setFrozenRows(1);
+  }
+
+  // 4. Setup Dashboard (View) Sheet
   let sheetView = ss.getSheetByName(SHEET_NAME_VIEW);
   if (!sheetView) {
     sheetView = ss.insertSheet(SHEET_NAME_VIEW);
@@ -52,7 +73,7 @@ function doPost(e) {
   if (!e.postData) return returnJSON({result: "error", message: "No data received"});
 
   const lock = LockService.getScriptLock();
-  lock.tryLock(10000); // Wait up to 10s for other users
+  lock.tryLock(10000); 
 
   try {
     const data = JSON.parse(e.postData.contents);
@@ -65,7 +86,6 @@ function doPost(e) {
         
         // Update last row (excluding timestamp at col 1)
         const filaActualizada = [data.responsable, ...data.valores];
-        // Timestmap is Col 1. Data starts at Col 2.
         sheet.getRange(ultimaFila, 2, 1, filaActualizada.length).setValues([filaActualizada]);
         
         return returnJSON({result: "success", message: "Último registro corregido exitosamente"});
@@ -75,14 +95,27 @@ function doPost(e) {
     }
 
     // --- NORMAL MODE ---
-    // Create row: Timestamp + Responsable + Values
-    const nuevaFila = [new Date(), data.responsable, ...data.valores];
+    const timestamp = new Date();
+    // 1. Write to Master DB
+    const nuevaFila = [timestamp, data.responsable, ...data.valores];
     sheet.appendRow(nuevaFila);
+    
+    // 2. Write to Historial O2 (First 9 values)
+    const sheetO2 = ss.getSheetByName(SHEET_NAME_O2) || ss.insertSheet(SHEET_NAME_O2);
+    // data.valores indexes 0-8 are O2
+    const rowO2 = [timestamp, data.responsable, ...data.valores.slice(0, 9)];
+    sheetO2.appendRow(rowO2);
+
+    // 3. Write to Historial Energy (Remaining values)
+    const sheetEnergy = ss.getSheetByName(SHEET_NAME_ENERGY) || ss.insertSheet(SHEET_NAME_ENERGY);
+    // data.valores indexes 9 onwards are Energy
+    const rowEnergy = [timestamp, data.responsable, ...data.valores.slice(9)];
+    sheetEnergy.appendRow(rowEnergy);
     
     // Update Dashboard View
     updateDashboard(data);
 
-    return returnJSON({result: "success", message: "Datos guardados"});
+    return returnJSON({result: "success", message: "Datos guardados en Historiales"});
     
   } catch (err) {
     return returnJSON({result: "error", message: "Error interno: " + err.toString()});
