@@ -1,5 +1,5 @@
 // Final Production Build v5.1
-const API_URL = "https://script.google.com/macros/s/AKfycbzHHVbW3cSZrRZiKhYx65e4C6Tdx4o4unrcigvmswQl9F8bSsxLr_dKgr6Jwqyx2YoF/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzfLHd2FBjtMnYj-iDp-ch-spnutcpsWHZl44h59OXHgJlaqi8RDcBpv7Vp8ALBpXWJlg/exec";
 const PASSWORD_ADMIN = "mantencioncermaq";
 
 // Service Worker Update Handling
