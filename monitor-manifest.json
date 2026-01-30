@@ -1,7 +1,7 @@
 {
-    "name": "Monitor F1 - Energía & O2",
-    "short_name": "Monitor F1",
-    "description": "Monitor en tiempo real de sistemas de oxígeno y energía",
+    "name": "O2 y Energía - CERMAQ STA JUANA",
+    "short_name": "O2 y Energía",
+    "description": "Monitor en tiempo real de sistemas de oxígeno y energía - CERMAQ Santa Juana",
     "start_url": "./monitor.html",
     "display": "standalone",
     "background_color": "#0a0f1a",
