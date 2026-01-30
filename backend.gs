@@ -102,25 +102,23 @@ function doPost(e) {
     }
 
     // --- NORMAL MODE ---
-    // Get timestamp in Chile timezone (GMT-3)
+    // Save timestamp as-is (Google Sheets will handle timezone automatically)
     const timestamp = new Date();
-    const chileTime = Utilities.formatDate(timestamp, "America/Santiago", "yyyy-MM-dd HH:mm:ss");
-    const chileTimestamp = new Date(chileTime);
     
     // 1. Write to Master DB
-    const nuevaFila = [chileTimestamp, data.responsable, ...data.valores];
+    const nuevaFila = [timestamp, data.responsable, ...data.valores];
     sheet.appendRow(nuevaFila);
     
     // 2. Write to Historial O2 (First 9 values)
     const sheetO2 = ss.getSheetByName(SHEET_NAME_O2) || ss.insertSheet(SHEET_NAME_O2);
     // data.valores indexes 0-8 are O2
-    const rowO2 = [chileTimestamp, data.responsable, ...data.valores.slice(0, 9)];
+    const rowO2 = [timestamp, data.responsable, ...data.valores.slice(0, 9)];
     sheetO2.appendRow(rowO2);
 
     // 3. Write to Historial Energy (Remaining values)
     const sheetEnergy = ss.getSheetByName(SHEET_NAME_ENERGY) || ss.insertSheet(SHEET_NAME_ENERGY);
     // data.valores indexes 9 onwards are Energy
-    const rowEnergy = [chileTimestamp, data.responsable, ...data.valores.slice(9)];
+    const rowEnergy = [timestamp, data.responsable, ...data.valores.slice(9)];
     sheetEnergy.appendRow(rowEnergy);
     
     // Update Dashboard View
