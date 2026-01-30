@@ -225,11 +225,17 @@ function doGet(e) {
       // Zip labels with values
       const zippedData = labels.map((label, index) => [label, rawValues[index] || "-"]);
 
+      // Ensure timestamp is a string (force conversion)
+      const finalTimestamp = String(timestampStr);
+      
       result = {
-        timestamp: timestampStr, // Send as formatted string
+        timestamp: finalTimestamp, // Send as formatted string
         responsable: responsable,
         data: zippedData
       };
+      
+      // Debug log
+      Logger.log("Timestamp sent: " + finalTimestamp + " (type: " + typeof finalTimestamp + ")");
       
     } else {
         result = { error: true, message: "No Data Found" };
