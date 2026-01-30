@@ -315,16 +315,16 @@
                     title: "SISTEMA OXÍGENO",
                     icon: "bi-wind",
                     sections: [
-                        { title: "Compresor", items: [{ l: "Hrs", v: findVal("O2 Comp HRS"), u: "Hrs" }, { l: "KW", v: findVal("O2 Comp KW"), u: "KW" }, { l: "Flujo", v: findVal("O2 Comp M3"), u: "m³" }] },
-                        { title: "Gen. O2 1", items: [{ l: "Hrs", v: findVal("O2 Gen1 HRS"), u: "Hrs" }, { l: "Flujo", v: findVal("O2 Gen1 M3"), u: "m³" }] },
-                        { title: "Gen. O2 2", items: [{ l: "Hrs", v: findVal("O2 Gen2 HRS"), u: "Hrs" }, { l: "Flujo", v: findVal("O2 Gen2 M3"), u: "m³" }] }
+                        { title: "Compresor", items: [{ l: "Flujo", v: findVal("O2 Comp M3"), u: "m³" }, { l: "KW", v: findVal("O2 Comp KW"), u: "KWh" }, { l: "Hrs", v: findVal("O2 Comp HRS"), u: "Hrs" }] },
+                        { title: "Gen. O2 1", items: [{ l: "Flujo", v: findVal("O2 Gen1 M3"), u: "m³" }, { l: "Hrs", v: findVal("O2 Gen1 HRS"), u: "Hrs" }] },
+                        { title: "Gen. O2 2", items: [{ l: "Flujo", v: findVal("O2 Gen2 M3"), u: "m³" }, { l: "Hrs", v: findVal("O2 Gen2 HRS"), u: "Hrs" }] }
                     ]
                 },
                 {
                     title: "CONSUMO O2",
                     icon: "bi-graph-down",
                     sections: [
-                        { title: "Biomasa", items: [{ l: "Fry 1", v: findVal("O2 Cons Fry"), u: "Kg" }, { l: "Smolt", v: findVal("O2 Cons Smolt"), u: "Kg" }] }
+                        { title: "Criogenico", items: [{ l: "O1 Fry", v: findVal("O2 Cons Fry"), u: "Kg" }, { l: "O2 Smolt", v: findVal("O2 Cons Smolt"), u: "Kg" }] }
                     ]
                 },
                 {
