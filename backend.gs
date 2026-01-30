@@ -195,16 +195,13 @@ function doGet(e) {
     if (sheetDB && sheetDB.getLastRow() >= 2) {
       const lastRow = sheetDB.getLastRow();
       
-      // Get all values from the last row (25 columns based on headers)
-      const dataVals = sheetDB.getRange(lastRow, 1, 1, 25).getValues()[0];
+      // Get timestamp EXACTLY as it appears visually in Google Sheets
+      const timestampStr = sheetDB.getRange(lastRow, 1).getDisplayValue();
       
-      // Extract Data - Format timestamp directly from Sheets value
-      const rawTimestamp = dataVals[0];
-      // Format the timestamp as string in Chile timezone to avoid any conversion issues
-      const timestampStr = Utilities.formatDate(new Date(rawTimestamp), "America/Santiago", "dd-MM-yyyy HH:mm");
-      
-      const responsable = dataVals[1];
-      const rawValues = dataVals.slice(2); // The rest of the values
+      // Get rest of data normally
+      const dataVals = sheetDB.getRange(lastRow, 2, 1, 24).getValues()[0];
+      const responsable = dataVals[0];
+      const rawValues = dataVals.slice(1); // The rest of the values
 
       // Reconstruct labels for Valid Response
       const labels = [
@@ -223,17 +220,11 @@ function doGet(e) {
       // Zip labels with values
       const zippedData = labels.map((label, index) => [label, rawValues[index] || "-"]);
 
-      // Ensure timestamp is a string (force conversion)
-      const finalTimestamp = String(timestampStr);
-      
       result = {
-        timestamp: finalTimestamp, // Send as formatted string
+        timestamp: timestampStr, // Exactly as shown in Sheets
         responsable: responsable,
         data: zippedData
       };
-      
-      // Debug log
-      Logger.log("Timestamp sent: " + finalTimestamp + " (type: " + typeof finalTimestamp + ")");
       
     } else {
         result = { error: true, message: "No Data Found" };
