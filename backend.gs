@@ -200,8 +200,11 @@ function doGet(e) {
       // Get all values from the last row (25 columns based on headers)
       const dataVals = sheetDB.getRange(lastRow, 1, 1, 25).getValues()[0];
       
-      // Extract Data
-      const timestamp = dataVals[0];
+      // Extract Data - Format timestamp directly from Sheets value
+      const rawTimestamp = dataVals[0];
+      // Format the timestamp as string in Chile timezone to avoid any conversion issues
+      const timestampStr = Utilities.formatDate(new Date(rawTimestamp), "America/Santiago", "dd-MM-yyyy HH:mm");
+      
       const responsable = dataVals[1];
       const rawValues = dataVals.slice(2); // The rest of the values
 
@@ -223,7 +226,7 @@ function doGet(e) {
       const zippedData = labels.map((label, index) => [label, rawValues[index] || "-"]);
 
       result = {
-        timestamp: timestamp,
+        timestamp: timestampStr, // Send as formatted string
         responsable: responsable,
         data: zippedData
       };
