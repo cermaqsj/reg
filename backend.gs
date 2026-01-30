@@ -182,54 +182,51 @@ function updateDashboard(data) {
 }
 
 // Ping for Network Check OR Get Latest Data
+// Ping for Network Check OR Get Latest Data
 function doGet(e) {
   // If action=latest, return the last submission data
   if (e.parameter && e.parameter.action === "latest") {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    let sheetView = ss.getSheetByName(SHEET_NAME_VIEW);
-    
-    // Auto-create if missing
-    if (!sheetView) {
-      sheetView = ss.insertSheet(SHEET_NAME_VIEW);
+    const sheetDB = ss.getSheetByName(SHEET_NAME_DB);
+    let result = {};
+
+    if (sheetDB && sheetDB.getLastRow() >= 2) {
+      const lastRow = sheetDB.getLastRow();
+      
+      // Get all values from the last row (25 columns based on headers)
+      const dataVals = sheetDB.getRange(lastRow, 1, 1, 25).getValues()[0];
+      
+      // Extract Data
+      const timestamp = dataVals[0];
+      const responsable = dataVals[1];
+      const rawValues = dataVals.slice(2); // The rest of the values
+
+      // Reconstruct labels for Valid Response
+      const labels = [
+       "O2 Comp KW", "O2 Comp M3", "O2 Comp HRS", 
+       "O2 Gen1 HRS", "O2 Gen1 M3",
+       "O2 Gen2 HRS", "O2 Gen2 M3",
+       "O2 Cons Fry", "O2 Cons Smolt",
+       "Red V12", "Red V23", "Red V31",
+       "Red I1", "Red I2", "Red I3",
+       "Red SumP KW", "Red EA GW",
+       "D Gen1 HRS", "D Gen1 KW",
+       "D Gen2 HRS", "D Gen2 KW",
+       "D Gen3 HRS", "D Gen3 KW"
+      ];
+      
+      // Zip labels with values
+      const zippedData = labels.map((label, index) => [label, rawValues[index] || "-"]);
+
+      result = {
+        timestamp: timestamp,
+        responsable: responsable,
+        data: zippedData
+      };
+      
+    } else {
+        result = { error: true, message: "No Data Found" };
     }
-    
-    // CHECK: Is View empty? If so, try to populate from DB
-    if (sheetView.getRange("B2").getValue() === "") {
-      const sheetDB = ss.getSheetByName(SHEET_NAME_DB);
-      if (sheetDB && sheetDB.getLastRow() >= 2) {
-         const lastRow = sheetDB.getLastRow();
-         // Col 2 = Responsable, Col 3+ = Values
-         const responsable = sheetDB.getRange(lastRow, 2).getValue();
-         // 24 Data Columns (Removed 3 diesel Lts)
-         const valores = sheetDB.getRange(lastRow, 3, 1, 24).getValues()[0];
-         
-         // Update the view sheet so it's ready
-         updateDashboard({
-           responsable: responsable,
-           valores: valores
-         });
-         
-         // Re-get sheetView after update to ensure we read fresh data
-         sheetView = ss.getSheetByName(SHEET_NAME_VIEW);
-      }
-    }
-    
-    // Now read from View (either pre-existing or just populated)
-    const lastUpdate = sheetView.getRange("B2").getValue();
-    const responsable = sheetView.getRange("B3").getValue();
-    
-    // Read key-values starting at row 5
-    const lastRow = sheetView.getLastRow();
-    let values = [];
-    if (lastRow >= 5) {
-       values = sheetView.getRange(5, 1, lastRow - 4, 2).getValues(); // Read Col A and B
-    }
-    
-    const result = {
-      timestamp: lastUpdate,
-      responsable: responsable,
-      data: values // [[Label, Value], [Label, Value]...]
-    };
     
     return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
   }
