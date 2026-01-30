@@ -299,3 +299,34 @@ body {
 .admin-trigger:hover {
     color: var(--text-light);
 }
+
+/* PWA Install Button */
+.btn-install-pwa {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border: none;
+    border-radius: 16px;
+    padding: 14px 28px;
+    font-weight: 700;
+    font-size: 1rem;
+    color: white;
+    box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.4);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-install-pwa:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px -5px rgba(2, 132, 199, 0.5);
+    background: linear-gradient(135deg, #023e7d, #0096c7);
+    color: white;
+}
+
+.btn-install-pwa:active {
+    transform: scale(0.98);
+}
+
+.btn-install-pwa img {
+    border-radius: 8px;
+}
