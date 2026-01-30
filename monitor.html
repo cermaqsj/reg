@@ -90,15 +90,16 @@
 
         .dashboard-grid {
             height: 100%;
-            display: flex;
-            gap: 1.25rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            align-content: start;
         }
 
         .dashboard-col {
-            flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 1.25rem;
+            gap: 1.5rem;
             min-width: 0;
         }
 
@@ -249,15 +250,8 @@
         }
 
         #refreshTimer {
-            width: 0%;
-            height: 3px;
-            background: linear-gradient(90deg, #60a5fa, #22d3ee, #10b981);
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-            transition: width 1s linear;
-            box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+            display: none;
+            /* Hidden per user request */
         }
 
         .status-dot {
@@ -398,7 +392,15 @@
         }
 
         function renderDashboard(data) {
-            document.getElementById('lastUpdate').textContent = data.timestamp ? new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
+            const lastUpdateEl = document.getElementById('lastUpdate');
+            if (data.timestamp) {
+                const date = new Date(data.timestamp);
+                const dateStr = date.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                const timeStr = date.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+                lastUpdateEl.textContent = `${dateStr} ${timeStr}`;
+            } else {
+                lastUpdateEl.textContent = '--/--/---- --:--';
+            }
 
             const container = document.getElementById('mainContainer');
             const raw = data.data || [];
