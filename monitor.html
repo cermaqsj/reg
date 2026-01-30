@@ -5,6 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monitor F1 - Energía & O2</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Monitor en tiempo real de sistemas de oxígeno y energía">
+    <meta name="theme-color" content="#60a5fa">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Monitor F1">
+    <link rel="manifest" href="./monitor-manifest.json">
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Fonts -->
@@ -361,20 +370,109 @@
             }
         }
 
-        /* Responsive */
-        @media (max-width: 1200px) {
+        /* Desktop Responsive Design */
+
+        /* 1920x1080 and larger (Full HD+) */
+        @media (min-width: 1920px) {
+            .dashboard-grid {
+                gap: 2rem;
+            }
+
+            .val-text {
+                font-size: 2rem;
+            }
+
+            .group-header {
+                padding: 1.25rem 1.75rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* 1680x1050 to 1920x1080 */
+        @media (min-width: 1680px) and (max-width: 1919px) {
+            .dashboard-grid {
+                gap: 1.75rem;
+            }
+
+            .val-text {
+                font-size: 1.85rem;
+            }
+        }
+
+        /* 1366x768 to 1680x1050 (Common laptop resolution) */
+        @media (min-width: 1366px) and (max-width: 1679px) {
+            .dashboard-grid {
+                gap: 1.5rem;
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .val-text {
+                font-size: 1.7rem;
+            }
+
+            .group-header {
+                padding: 1rem 1.25rem;
+                font-size: 0.8rem;
+            }
+
+            .group-body {
+                padding: 1rem;
+                gap: 0.85rem;
+            }
+
+            .data-item {
+                padding: 0.6rem 0.4rem;
+            }
+        }
+
+        /* 1280x720 to 1366x768 */
+        @media (min-width: 1280px) and (max-width: 1365px) {
+            .dashboard-grid {
+                gap: 1.25rem;
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .val-text {
+                font-size: 1.6rem;
+            }
+
+            .group-header {
+                padding: 0.9rem 1.15rem;
+                font-size: 0.75rem;
+            }
+
+            .glass-header {
+                padding: 0.85rem 0;
+            }
+        }
+
+        /* Tablets and smaller laptops */
+        @media (max-width: 1279px) {
             body {
                 height: auto;
                 overflow: auto;
             }
 
             .dashboard-grid {
-                flex-direction: column;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.25rem;
                 height: auto;
+            }
+
+            .val-text {
+                font-size: 1.8rem;
             }
 
             .group-card {
                 min-height: 280px;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
             }
         }
 
@@ -563,6 +661,15 @@
 
         fetchData();
         setInterval(fetchData, REFRESH_INTERVAL);
+
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./monitor-sw.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed:', err));
+            });
+        }
     </script>
 </body>
 

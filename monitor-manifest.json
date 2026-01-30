@@ -1,0 +1,18 @@
+{
+    "name": "Monitor F1 - Energía & O2",
+    "short_name": "Monitor F1",
+    "description": "Monitor en tiempo real de sistemas de oxígeno y energía",
+    "start_url": "./monitor.html",
+    "display": "standalone",
+    "background_color": "#0a0f1a",
+    "theme_color": "#60a5fa",
+    "orientation": "landscape",
+    "icons": [
+        {
+            "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230a0f1a'/%3E%3Cpath d='M256 80c-97 0-176 79-176 176s79 176 176 176 176-79 176-176S353 80 256 80zm0 288c-62 0-112-50-112-112s50-112 112-112 112 50 112 112-50 112-112 112z' fill='%2360a5fa'/%3E%3Ccircle cx='256' cy='256' r='48' fill='%2322d3ee'/%3E%3C/svg%3E",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ]
+}
