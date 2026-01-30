@@ -37,6 +37,10 @@ function setupSpreadsheet() {
   let sheetO2 = ss.getSheetByName(SHEET_NAME_O2);
   if (!sheetO2) {
       sheetO2 = ss.insertSheet(SHEET_NAME_O2);
+  }
+  
+  // Check if empty and populate
+  if (sheetO2.getRange("A1").getValue() === "") {
       const headersO2 = ["Timestamp", "Responsable", ...headers.slice(2, 11)]; // O2 Cols
       sheetO2.getRange(1, 1, 1, headersO2.length).setValues([headersO2]);
       sheetO2.getRange(1, 1, 1, headersO2.length).setFontWeight("bold").setBackground("#e6f7ff");
@@ -47,6 +51,10 @@ function setupSpreadsheet() {
   let sheetEnergy = ss.getSheetByName(SHEET_NAME_ENERGY);
   if (!sheetEnergy) {
       sheetEnergy = ss.insertSheet(SHEET_NAME_ENERGY);
+  }
+
+  // Check if empty and populate
+  if (sheetEnergy.getRange("A1").getValue() === "") {
       const headersEnergy = ["Timestamp", "Responsable", ...headers.slice(11)]; // Energy Cols
       sheetEnergy.getRange(1, 1, 1, headersEnergy.length).setValues([headersEnergy]);
       sheetEnergy.getRange(1, 1, 1, headersEnergy.length).setFontWeight("bold").setBackground("#fff7e6");
