@@ -425,16 +425,137 @@ if (!document.getElementById('toastAnimations')) {
     document.head.appendChild(style);
 }
 
+// ============================================
+// STATUS DASHBOARD FUNCTIONS
+// ============================================
+
+// Check Sheets connection
+async function checkSheetsConnection() {
+    const statusEl = document.getElementById('sheetsStatus');
+    const iconEl = document.getElementById('sheetsIcon');
+
+    try {
+        const response = await fetch(API_URL + '?ping=true', {
+            method: 'GET',
+            signal: AbortSignal.timeout(5000)
+        });
+
+        if (response.ok) {
+            statusEl.textContent = 'Online';
+            statusEl.style.color = 'var(--success)';
+            iconEl.className = 'bi bi-cloud-check';
+            iconEl.style.color = 'var(--success)';
+        } else {
+            throw new Error('No response');
+        }
+    } catch (err) {
+        statusEl.textContent = 'Offline';
+        statusEl.style.color = 'var(--danger)';
+        iconEl.className = 'bi bi-cloud-slash';
+        iconEl.style.color = 'var(--danger)';
+    }
+}
+
+// Update last submission time
+function updateLastSubmitTime() {
+    const lastSubmit = localStorage.getItem('lastSubmissionTime');
+    const el = document.getElementById('lastSubmit');
+
+    if (!lastSubmit) {
+        el.textContent = 'Nunca';
+        return;
+    }
+
+    const date = new Date(parseInt(lastSubmit));
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) {
+        el.textContent = 'Ahora';
+    } else if (diffMins < 60) {
+        el.textContent = `Hace ${diffMins}min`;
+    } else if (diffHours < 24) {
+        el.textContent = `Hace ${diffHours}h`;
+    } else {
+        el.textContent = `Hace ${diffDays}d`;
+    }
+}
+
+// Force update: Clear all caches and reload
+async function forceUpdate() {
+    const btn = document.getElementById('btnForceUpdate');
+    const originalHTML = btn.innerHTML;
+
+    if (!confirm('¿Actualizar a la última versión?\n\nEsto limpiará el cache y recargará la aplicación.')) {
+        return;
+    }
+
+    btn.disabled = true;
+    btn.classList.add('updating');
+    btn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Actualizando...';
+
+    try {
+        // 1. Unregister all service workers
+        if ('serviceWorker' in navigator) {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            for (const registration of registrations) {
+                await registration.unregister();
+            }
+        }
+
+        // 2. Clear all caches
+        if ('caches' in window) {
+            const cacheNames = await caches.keys();
+            await Promise.all(cacheNames.map(name => caches.delete(name)));
+        }
+
+        // 3. Clear localStorage backup (keep lastSubmission for tracking)
+        localStorage.removeItem('formBackup');
+        localStorage.removeItem('formBackupTime');
+
+        showToast('Cache limpiado. Recargando...', 'success');
+
+        // 4. Hard reload after short delay
+        setTimeout(() => {
+            window.location.reload(true);
+        }, 1000);
+
+    } catch (err) {
+        console.error('Error durante force update:', err);
+        btn.disabled = false;
+        btn.classList.remove('updating');
+        btn.innerHTML = originalHTML;
+        showToast('Error al actualizar: ' + err.message, 'error');
+    }
+}
+
 // Initialize on load
 document.addEventListener('DOMContentLoaded', () => {
     checkForRecovery();
     startAutoSave();
+    checkSheetsConnection();
+    updateLastSubmitTime();
+
+    // Set up force update button
+    document.getElementById('btnForceUpdate').addEventListener('click', forceUpdate);
+
+    // Update Sheets status every 30 seconds
+    setInterval(checkSheetsConnection, 30000);
+
+    // Update last submit time every minute
+    setInterval(updateLastSubmitTime, 60000);
+
     console.log(`%c🚀 Sistema v${APP_VERSION}`, 'color: #10b981; font-weight: bold; font-size: 14px');
 });
 
-// Override finishSubmission to clear backup
+// Override finishSubmission to clear backup and update last submit
 const originalFinish = finishSubmission;
 finishSubmission = function () {
     clearBackup();
+    localStorage.setItem('lastSubmissionTime', Date.now());
+    updateLastSubmitTime();
     if (originalFinish) originalFinish();
 };

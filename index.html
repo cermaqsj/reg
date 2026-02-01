@@ -38,6 +38,30 @@
         </div>
     </header>
 
+    <!-- Status Dashboard -->
+    <div class="status-dashboard fade-in-down" style="animation-delay: 0.1s;">
+        <div class="status-row">
+            <div class="status-item">
+                <i class="bi bi-rocket-takeoff"></i>
+                <span class="status-label">Versión</span>
+                <span class="status-value" id="appVersion">v6.0.0</span>
+            </div>
+            <div class="status-item">
+                <i class="bi bi-cloud-check" id="sheetsIcon"></i>
+                <span class="status-label">Sheets</span>
+                <span class="status-value" id="sheetsStatus">Verificando...</span>
+            </div>
+            <div class="status-item">
+                <i class="bi bi-clock-history"></i>
+                <span class="status-label">Último Envío</span>
+                <span class="status-value" id="lastSubmit">Nunca</span>
+            </div>
+        </div>
+        <button class="btn-force-update" id="btnForceUpdate" title="Limpiar cache y actualizar a última versión">
+            <i class="bi bi-arrow-clockwise"></i> Actualizar App
+        </button>
+    </div>
+
     <form id="registroForm" novalidate onsubmit="handleSubmit(event)">
 
         <!-- Card: Identificación -->
