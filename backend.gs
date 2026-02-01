@@ -521,15 +521,53 @@ function updateDashboard(data) {
     sheetView.autoResizeColumns(1, 2);
     
   } catch(e) {
-    console.error("Error updates dashboard: " + e.toString());
-  }
-}
 
-// Ping for Network Check OR Get Latest Data
-// Ping for Network Check OR Get Latest Data
-function doGet(e) {
+  if (!e.parameter) {
+    // Default Ping
+    return returnJSON({status: "online"});
+  }
+
+  // --- ACTION: HISTORY (LAST 7 RECORDS) ---
+  if (e.parameter.action === "history") {
+    try {
+      const lockSuccess = lock.tryLock(30000); 
+      if (!lockSuccess) return returnJSON({error: "Server Busy", message: "Sistema ocupado, intente luego."});
+
+      const ss = SpreadsheetApp.getActiveSpreadsheet();
+      const sheet = ss.getSheetByName(SHEET_NAME_DB);
+      
+      if (!sheet) return returnJSON({error: "Error", message: "Hoja de datos no encontrada."});
+
+      const lastRow = sheet.getLastRow();
+      
+      // Get last 7 rows (or fewer if not enough data)
+      const numRows = Math.min(lastRow - 1, 7); 
+      if (numRows < 1) return returnJSON({error: "No Data", message: "No hay historial suficiente."});
+
+      const startRow = lastRow - numRows + 1;
+      const dataRange = sheet.getRange(startRow, 1, numRows, sheet.getLastColumn());
+      const rawData = dataRange.getValues();
+
+      // headers for mapping
+      const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+
+      const history = rawData.map(row => {
+        let entry = {};
+        headers.forEach((h, i) => entry[h] = row[i]);
+        return entry;
+      });
+
+      return returnJSON({ result: "success", history: history });
+    } catch (err) {
+       logSystemError("API_HISTORY", err.toString());
+       return returnJSON({error: "Error", message: err.toString()});
+    } finally {
+      lock.releaseLock();
+    }
+  }
+
   // If action=latest, return the last submission data
-  if (e.parameter && e.parameter.action === "latest") {
+  if (e.parameter.action === "latest") {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheetDB = ss.getSheetByName(SHEET_NAME_DB);
     let result = {};
