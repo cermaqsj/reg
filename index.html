@@ -271,9 +271,12 @@
 
     </form>
 
+
     <!-- Admin Trigger -->
     <div class="text-center pb-4">
-        <i class="bi bi-gear-fill admin-trigger" onclick="toggleAdmin()"></i>
+        <i class="bi bi-gear-fill admin-trigger" onclick="toggleAdmin()" title="Modo Admin"></i>
+        <i class="bi bi-key-fill admin-trigger ms-3" onclick="openChangePinModal()" title="Cambiar PIN"
+            style="color: #f59e0b;"></i>
     </div>
 
     <!-- PWA Install Button -->
@@ -297,10 +300,83 @@
                 <div class="modal-body" id="modalSummary">
                     <!-- Summary injected by JS -->
                 </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Editar</button>
-                    <button type="button" class="btn btn-success" id="btnFinalSend" onclick="sendData()">Enviar
-                        Definitivo</button>
+                <div class="modal-footer border-top pt-3" style="display: block;">
+                    <div class="alert alert-info mb-3">
+                        <i class="bi bi-shield-lock-fill"></i> <strong>Validación Requerida</strong>
+                        <p class="small mb-0 mt-1">Ingrese su nombre y PIN de autorización para confirmar el envío.</p>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="confirmResponsable" placeholder="Responsable"
+                            required>
+                        <label>Responsable del Turno</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="authPin" placeholder="PIN" maxlength="4"
+                            inputmode="numeric" required autocomplete="off">
+                        <label><i class="bi bi-key-fill"></i> PIN de Autorización (4 dígitos)</label>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-secondary flex-fill" data-bs-dismiss="modal">
+                            <i class="bi bi-pencil"></i> Editar
+                        </button>
+                        <button type="button" class="btn btn-success flex-fill" id="btnFinalSend" onclick="sendData()">
+                            <i class="bi bi-check-circle"></i> Enviar Definitivo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Cambiar PIN -->
+    <div class="modal fade" id="changePinModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-modal">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-shield-lock"></i> Cambiar PIN de Autorización
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <strong>Acceso Restringido</strong>
+                        <p class="small mb-0 mt-1">Requiere contraseña de administrador para cambiar el PIN.</p>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="adminPassForPin" placeholder="Password Admin"
+                            required autocomplete="off">
+                        <label>Contraseña de Administrador</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="currentPinInput" placeholder="PIN Actual"
+                            maxlength="4" inputmode="numeric" required autocomplete="off">
+                        <label>PIN Actual (4 dígitos)</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="newPinInput" placeholder="Nuevo PIN"
+                            maxlength="4" inputmode="numeric" required autocomplete="off">
+                        <label>Nuevo PIN (4 dígitos)</label>
+                    </div>
+
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="confirmNewPinInput" placeholder="Confirmar PIN"
+                            maxlength="4" inputmode="numeric" required autocomplete="off">
+                        <label>Confirmar Nuevo PIN</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="submitPinChange()">
+                        <i class="bi bi-check-circle"></i> Cambiar PIN
+                    </button>
                 </div>
             </div>
         </div>

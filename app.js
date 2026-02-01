@@ -1,5 +1,5 @@
-// Final Production Build v5.1
-const API_URL = "https://script.google.com/macros/s/AKfycbySS-4fIZ3T0BXdU9TIK1xzM0DDxFBiSY8eEqOFuMghlHwrgmNN7GX7hVDteD-2N8DbJw/exec";
+// Final Production Build v5.2 - Secure Authentication System
+const API_URL = "https://script.google.com/macros/s/AKfycbzmX1LnuYCYjnOK3WZTcXmdvfs9PtNZj2vmMl6LVVBIrqG1FTIJ-t9JpwiHztCWGCav1A/exec";
 const PASSWORD_ADMIN = "mantencioncermaq";
 
 // Service Worker Update Handling
@@ -124,6 +124,12 @@ function handleSubmit(event) {
     }
 
     modalSummary.innerHTML = summaryHtml;
+
+    // Auto-llenar responsable en el modal de confirmación
+    document.getElementById('confirmResponsable').value = responsable;
+    // Limpiar PIN anterior
+    document.getElementById('authPin').value = '';
+
     confirmModal.show();
 }
 
@@ -134,10 +140,25 @@ function sendData() {
         return;
     }
 
-    btnFinalSend.disabled = true;
-    btnFinalSend.innerText = "Enviando y Verificando...";
+    // Obtener responsable y PIN del modal de confirmación
+    const responsable = document.getElementById('confirmResponsable').value;
+    const authPin = document.getElementById('authPin').value;
 
-    const responsable = document.getElementById('responsable').value;
+    // Validar responsable
+    if (!responsable || !responsable.trim()) {
+        alert("El nombre del Responsable es obligatorio.");
+        return;
+    }
+
+    // Validar PIN (4 dígitos numéricos)
+    if (!authPin || authPin.length !== 4 || !/^\d{4}$/.test(authPin)) {
+        alert("PIN debe ser exactamente 4 dígitos numéricos.");
+        document.getElementById('authPin').focus();
+        return;
+    }
+
+    btnFinalSend.disabled = true;
+    btnFinalSend.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Validando...';
 
     const valores = fieldIds.map(id => {
         const el = document.getElementById(id);
@@ -148,17 +169,16 @@ function sendData() {
         modo: appMode,
         password: adminPassword,
         responsable: responsable,
-        valores: valores
+        valores: valores,
+        authPin: authPin  // Incluir PIN para validación
     };
 
-    console.log("Payload:", payload);
+    console.log("Payload enviado (PIN oculto en log):", { ...payload, authPin: "****" });
 
-    // CRITICAL: Removed 'no-cors' to allow reading the response.
-    // This requires the Backend to be properly deployed as a Web App (Exec).
     fetch(API_URL, {
         method: "POST",
         redirect: "follow",
-        headers: { "Content-Type": "text/plain" }, // Standard hack for GAS Simple Request
+        headers: { "Content-Type": "text/plain" },
         body: JSON.stringify(payload)
     })
         .then(response => {
@@ -170,22 +190,23 @@ function sendData() {
                 alert("✅ Confirmado: " + data.message);
                 finishSubmission();
             } else {
-                throw new Error("El servidor rechazó los datos: " + (data.message || "Razón desconocida"));
+                throw new Error(data.message || "El servidor rechazó los datos");
             }
         })
         .catch(err => {
             console.error("Fetch Error:", err);
-            let msg = "⚠️ Error de Verificación.\n\n";
+            let msg = "⚠️ " + err.message;
 
             if (window.location.protocol === 'file:') {
-                msg += "Estás probando en LOCAL. Es normal que falle por seguridad del navegador (CORS).\n\nPosiblemente los datos SÍ se guardaron. Revisa la planilla.";
-            } else {
-                msg += "No pimos confirmar si se guardó. Revisa tu conexión y la planilla antes de intentar de nuevo.";
+                msg += "\n\nEstás probando en LOCAL. Revisa la planilla para confirmar.";
             }
 
             alert(msg);
             btnFinalSend.disabled = false;
-            btnFinalSend.innerText = "Reintentar";
+            btnFinalSend.innerHTML = '<i class="bi bi-check-circle"></i> Reintentar';
+
+            // Limpiar PIN en caso de error (seguridad)
+            document.getElementById('authPin').value = '';
         });
 }
 
@@ -218,5 +239,81 @@ function toggleAdmin() {
         if (!document.getElementById('registroForm')) location.reload();
     } else {
         if (pass !== null) alert("Contraseña incorrecta.");
+    }
+}
+
+// ============================================
+// SISTEMA DE CAMBIO DE PIN
+// ============================================
+
+function openChangePinModal() {
+    const modal = new bootstrap.Modal(document.getElementById('changePinModal'));
+    // Limpiar campos
+    document.getElementById('adminPassForPin').value = '';
+    document.getElementById('currentPinInput').value = '';
+    document.getElementById('newPinInput').value = '';
+    document.getElementById('confirmNewPinInput').value = '';
+    modal.show();
+}
+
+async function submitPinChange() {
+    const adminPass = document.getElementById('adminPassForPin').value;
+    const currentPin = document.getElementById('currentPinInput').value;
+    const newPin = document.getElementById('newPinInput').value;
+    const confirmPin = document.getElementById('confirmNewPinInput').value;
+
+    // Validaciones
+    if (!adminPass || !currentPin || !newPin || !confirmPin) {
+        alert("Todos los campos son obligatorios");
+        return;
+    }
+
+    if (!/^\d{4}$/.test(currentPin) || !/^\d{4}$/.test(newPin)) {
+        alert("Los PINs deben ser exactamente 4 dígitos numéricos");
+        return;
+    }
+
+    if (newPin !== confirmPin) {
+        alert("El nuevo PIN y su confirmación no coinciden");
+        return;
+    }
+
+    if (currentPin === newPin) {
+        alert("El nuevo PIN debe ser diferente al actual");
+        return;
+    }
+
+    // Confirmar cambio
+    if (!confirm(`¿Confirma cambiar el PIN de autorización?\n\nNuevo PIN: ${newPin}\n\n⚠️ IMPORTANTE: Comunique el nuevo PIN a todos los operadores inmediatamente.`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({
+                action: 'changePin',
+                adminPassword: adminPass,
+                currentPin: currentPin,
+                newPin: newPin
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert("✅ " + result.message);
+            bootstrap.Modal.getInstance(document.getElementById('changePinModal')).hide();
+            // Limpiar campos
+            document.getElementById('adminPassForPin').value = '';
+            document.getElementById('currentPinInput').value = '';
+            document.getElementById('newPinInput').value = '';
+            document.getElementById('confirmNewPinInput').value = '';
+        } else {
+            alert("❌ " + result.message);
+        }
+    } catch (err) {
+        alert("Error de conexión: " + err.message);
     }
 }

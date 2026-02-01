@@ -1,4 +1,143 @@
-const PASSWORD_ADMIN = "mantencioncermaq";
+// ============================================
+// SISTEMA DE SEGURIDAD CON PIN Y PASSWORD ADMIN
+// ============================================
+
+// Función para generar hash SHA-256 del PIN
+function hashPIN(pin) {
+  const saltedPin = pin + "CERMAQ_SALT_2026"; // Salt fijo para seguridad adicional
+  const digest = Utilities.computeDigest(
+    Utilities.DigestAlgorithm.SHA_256, 
+    saltedPin,
+    Utilities.Charset.US_ASCII
+  );
+  
+  return digest.map(byte => {
+    const v = (byte < 0) ? 256 + byte : byte;
+    return ('0' + v.toString(16)).slice(-2);
+  }).join('');
+}
+
+// Obtener hash del PIN almacenado
+function getStoredPINHash() {
+  const props = PropertiesService.getScriptProperties();
+  let pinHash = props.getProperty('PIN_HASH');
+  
+  // Si no existe, crear PIN por defecto: "1234"
+  if (!pinHash) {
+    pinHash = hashPIN("1234");
+    props.setProperty('PIN_HASH', pinHash);
+    Logger.log("⚠️ PIN por defecto creado: 1234 - Cámbielo inmediatamente");
+  }
+  
+  return pinHash;
+}
+
+// Validar PIN ingresado por el usuario
+function validatePIN(inputPin) {
+  if (!inputPin || inputPin.length !== 4 || !/^\d{4}$/.test(inputPin)) {
+    return false;
+  }
+  const storedHash = getStoredPINHash();
+  const inputHash = hashPIN(inputPin);
+  return inputHash === storedHash;
+}
+
+// Obtener password de administrador
+function getAdminPassword() {
+  const props = PropertiesService.getScriptProperties();
+  let adminPass = props.getProperty('ADMIN_PASSWORD');
+  
+  // Si no existe, crear password por defecto
+  if (!adminPass) {
+    adminPass = "mantencioncermaq";
+    props.setProperty('ADMIN_PASSWORD', adminPass);
+    Logger.log("⚠️ Password Admin por defecto: mantencioncermaq - Cámbielo inmediatamente");
+  }
+  
+  return adminPass;
+}
+
+// Cambiar PIN (requiere contraseña de administrador)
+function changePIN(adminPassword, currentPin, newPin) {
+  const ADMIN_PASSWORD = getAdminPassword();
+  
+  // Verificar contraseña admin
+  if (adminPassword !== ADMIN_PASSWORD) {
+    return {success: false, message: "Contraseña de administrador incorrecta"};
+  }
+  
+  // Verificar PIN actual
+  if (!validatePIN(currentPin)) {
+    return {success: false, message: "PIN actual incorrecto"};
+  }
+  
+  // Validar nuevo PIN (4 dígitos numéricos)
+  if (!/^\d{4}$/.test(newPin)) {
+    return {success: false, message: "Nuevo PIN debe ser exactamente 4 dígitos numéricos"};
+  }
+  
+  // Evitar PIN débiles
+  const weakPins = ["0000", "1111", "2222", "3333", "4444", "5555", "6666", "7777", "8888", "9999", "1234", "4321"];
+  if (weakPins.includes(newPin)) {
+    Logger.log("⚠️ Advertencia: PIN débil seleccionado");
+  }
+  
+  // Guardar nuevo PIN hasheado
+  const newHash = hashPIN(newPin);
+  PropertiesService.getScriptProperties().setProperty('PIN_HASH', newHash);
+  
+  // Registrar evento de seguridad
+  logSecurityEvent("PIN cambiado", "Admin");
+  
+  return {success: true, message: "PIN actualizado exitosamente. Comunique el nuevo PIN a los operadores."};
+}
+
+// Cambiar password de administrador
+function changeAdminPassword(currentPassword, newPassword) {
+  const ADMIN_PASSWORD = getAdminPassword();
+  
+  // Verificar contraseña actual
+  if (currentPassword !== ADMIN_PASSWORD) {
+    return {success: false, message: "Contraseña actual incorrecta"};
+  }
+  
+  // Validar nueva contraseña (mínimo 8 caracteres)
+  if (!newPassword || newPassword.length < 8) {
+    return {success: false, message: "Nueva contraseña debe tener al menos 8 caracteres"};
+  }
+  
+  // Guardar nueva contraseña
+  PropertiesService.getScriptProperties().setProperty('ADMIN_PASSWORD', newPassword);
+  
+  // Registrar evento
+  logSecurityEvent("Password Admin cambiado", "Admin");
+  
+  return {success: true, message: "Password de administrador actualizado exitosamente"};
+}
+
+// Registrar eventos de seguridad
+function logSecurityEvent(event, user) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let logSheet = ss.getSheetByName('Security_Log');
+    
+    if (!logSheet) {
+      logSheet = ss.insertSheet('Security_Log');
+      logSheet.getRange('A1:C1').setValues([['Timestamp', 'Evento', 'Usuario']]);
+      logSheet.getRange('A1:C1').setFontWeight('bold').setBackground('#fef3c7');
+      logSheet.setFrozenRows(1);
+    }
+    
+    logSheet.appendRow([new Date(), event, user]);
+  } catch (e) {
+    Logger.log("Error logging security event: " + e.toString());
+  }
+}
+
+// ============================================
+// CONSTANTES ORIGINALES
+// ============================================
+
 const SHEET_NAME_DB = "O2 y Energía"; 
 const SHEET_NAME_VIEW = "Resumen_Diario"; 
 const SHEET_NAME_O2 = "Historial_O2";
@@ -85,9 +224,35 @@ function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
     
+    // --- ENDPOINT: CAMBIAR PIN ---
+    if (data.action === "changePin") {
+      const result = changePIN(data.adminPassword, data.currentPin, data.newPin);
+      return returnJSON(result);
+    }
+    
+    // --- ENDPOINT: CAMBIAR PASSWORD ADMIN ---
+    if (data.action === "changeAdminPassword") {
+      const result = changeAdminPassword(data.currentPassword, data.newPassword);
+      return returnJSON(result);
+    }
+    
+    // --- VALIDACIÓN DE PIN PARA MODO NORMAL ---
+    if (data.modo !== "ADMIN") {
+      // Modo normal requiere PIN válido
+      if (!data.authPin || !validatePIN(data.authPin)) {
+        logSecurityEvent("Intento fallido de envío (PIN incorrecto)", data.responsable || "Desconocido");
+        return returnJSON({
+          result: "error", 
+          message: "PIN de autorización incorrecto"
+        });
+      }
+    }
+    
     // --- ADMIN EDIT MODE ---
     if (data.modo === "ADMIN") {
-      if (data.password === PASSWORD_ADMIN) {
+      const ADMIN_PASSWORD = getAdminPassword();
+      
+      if (data.password === ADMIN_PASSWORD) {
         const ultimaFila = sheet.getLastRow();
         if (ultimaFila < 2) return returnJSON({result: "error", message: "No hay registros para editar"});
         
@@ -95,8 +260,10 @@ function doPost(e) {
         const filaActualizada = [data.responsable, ...data.valores];
         sheet.getRange(ultimaFila, 2, 1, filaActualizada.length).setValues([filaActualizada]);
         
+        logSecurityEvent("Registro editado (modo admin)", data.responsable);
         return returnJSON({result: "success", message: "Último registro corregido exitosamente"});
       } else {
+        logSecurityEvent("Intento fallido modo admin (password incorrecta)", data.responsable || "Desconocido");
         return returnJSON({result: "error", message: "Contraseña de Admin incorrecta"});
       }
     }
@@ -123,6 +290,9 @@ function doPost(e) {
     
     // Update Dashboard View
     updateDashboard(data);
+    
+    // Log successful submission
+    logSecurityEvent("Datos registrados exitosamente", data.responsable);
 
     return returnJSON({result: "success", message: "Datos guardados en Historiales"});
     
