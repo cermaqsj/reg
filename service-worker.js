@@ -1,9 +1,9 @@
-const CACHE_NAME = 'planta-v5'; // Bumped to v4 to be sure
+const CACHE_NAME = 'planta-v5.2-auth'; // v5.2: Secure Authentication System
 const ASSETS = [
     './',
-    './index.html?v=4',
-    './style.css?v=4',
-    './app.js?v=4',
+    './index.html?v=5',
+    './style.css?v=5',
+    './app.js?v=5',
     './Cermaq_logo2.png',
     './Q.png',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
