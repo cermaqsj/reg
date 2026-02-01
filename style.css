@@ -1,39 +1,60 @@
-/* Premium Dark Professional Design v6.3 - Ultra Premium */
+/* Premium Dark Professional Design v7.0 - Ultra Premium with Theme Support */
 :root {
+    /* --- SHARED PALETTE --- */
     --primary: #60a5fa;
     --primary-dark: #3b82f6;
     --accent: #38bdf8;
-    /* Bright Premium Blue */
     --success: #34d399;
     --danger: #f87171;
+    --warning: #f59e0b;
 
-    /* Professional Dark Background */
+    /* --- DARK THEME (Default) --- */
     --bg-gradient: linear-gradient(135deg, #0a192f 0%, #112240 50%, #0a192f 100%);
-
-    /* Glassmorphism Variables - Dark */
     --surface: rgba(17, 34, 64, 0.80);
     --glass: rgba(15, 35, 70, 0.70);
     --glass-border: rgba(96, 165, 250, 0.2);
-
     --text: #ffffff;
     --text-light: #cbd5e1;
+    --card-bg: rgba(30, 41, 59, 0.5);
 
+    /* Chart Colors (Dark) */
+    --chart-grid: rgba(255, 255, 255, 0.1);
+    --chart-text: #94a3b8;
+
+    --radius: 20px;
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
     --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
 
-    --radius: 20px;
-    /* Fully circular */
+/* --- LIGHT THEME OVERRIDES --- */
+[data-theme="light"] {
+    --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    --surface: rgba(255, 255, 255, 0.85);
+    /* Whiter surface */
+    --glass: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(56, 189, 248, 0.3);
+    /* Lighter blue border */
+    --text: #0f172a;
+    /* Dark text */
+    --text-light: #475569;
+    --card-bg: rgba(255, 255, 255, 0.6);
+
+    /* Chart Colors (Light) */
+    --chart-grid: rgba(0, 0, 0, 0.1);
+    --chart-text: #475569;
 }
 
 html {
     background-color: #0a192f;
-    /* Match bottom of gradient */
     overflow-x: hidden;
 }
 
+[data-theme="light"] html {
+    background-color: #f0f9ff;
+}
+
 body {
-    /* Prevent white box on pull */
     font-family: 'Outfit', sans-serif;
     background:
         linear-gradient(rgba(10, 25, 47, 0.88), rgba(15, 35, 70, 0.92)),
@@ -45,9 +66,17 @@ body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     position: relative;
+    transition: color 0.3s ease, background 0.3s ease;
 }
 
-/* Intense animated background - Professional Dark Theme */
+[data-theme="light"] body {
+    background:
+        linear-gradient(rgba(240, 249, 255, 0.85), rgba(224, 242, 254, 0.9)),
+        url('FONDO.jpg') center/cover no-repeat fixed,
+        linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+}
+
+/* --- EPIC BACKGROUND ANIMATIONS --- */
 body::before {
     content: '';
     position: fixed;
@@ -65,6 +94,13 @@ body::before {
     z-index: 0;
 }
 
+[data-theme="light"] body::before {
+    background:
+        radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.15) 0%, transparent 35%),
+        radial-gradient(circle at 85% 80%, rgba(16, 185, 129, 0.10) 0%, transparent 35%),
+        radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 40%);
+}
+
 @keyframes bgIntensePulse {
 
     0%,
@@ -78,7 +114,6 @@ body::before {
         transform: scale(1.08) rotate(2deg);
     }
 }
-
 
 /* --- ANIMATIONS --- */
 @keyframes fadeInDown {
@@ -114,77 +149,82 @@ body::before {
 }
 
 
-/* --- HEADER (Reference Style) --- */
-.app-header {
-    background: var(--glass);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+/* --- HEADER --- */
+/* Replacing old .app-header with the new Glass Header widely used */
+.glass-header {
+    background: rgba(10, 25, 47, 0.90);
+    backdrop-filter: blur(16px) saturate(180%);
     border-bottom: 1px solid var(--glass-border);
     padding: 12px 0;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: space-between;
     position: sticky;
     top: 0;
     z-index: 1000;
     margin-bottom: 24px !important;
-    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+    transition: background 0.3s ease, border-color 0.3s ease;
 }
 
-.nav-logo {
-    height: 36px;
-    width: auto;
-    object-fit: contain;
-    margin-bottom: 6px;
+[data-theme="light"] .glass-header {
+    background: rgba(255, 255, 255, 0.85);
+    border-bottom: 1px solid rgba(56, 189, 248, 0.3);
 }
 
-/* Status Pill */
-.status-pill {
-    padding: 4px 12px;
-    font-size: 0.75rem;
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(4px);
-    border-radius: 20px;
-    font-weight: 600;
-    color: var(--text-light);
-    border: 1px solid rgba(0, 0, 0, 0.04);
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-    transition: all 0.3s ease;
+.glass-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.4) 50%, transparent);
 }
 
-.status-indicator-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #cbd5e1;
-    /* Check/Loading */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+/* Utils for Header */
+.filter-white {
+    filter: brightness(0) invert(1) drop-shadow(0 2px 4px rgba(255, 255, 255, 0.3));
+    transition: filter 0.3s ease;
 }
 
-/* States */
-.status-pill.online .status-indicator-dot {
-    background-color: var(--success);
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+[data-theme="light"] .filter-white {
+    filter: none;
+    /* Original colors for light mode */
 }
 
-.status-pill.offline .status-indicator-dot {
-    background-color: var(--danger);
-    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+.text-gradient {
+    background: linear-gradient(135deg, #60a5fa 0%, #22d3ee 33%, #10b981 66%, #a78bfa 100%);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientFlow 6s ease infinite;
 }
 
-/* --- CARDS (Glass Minimalist) --- */
-.glass-card {
+@keyframes gradientFlow {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+/* --- CARDS & PANELS --- */
+.glass-card,
+.card {
     background: var(--surface);
-    border: 1px solid white;
+    border: 1px solid var(--glass-border);
     border-radius: var(--radius);
     box-shadow: var(--shadow-md);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: background 0.3s ease, border-color 0.3s ease, transform 0.25s ease;
     overflow: hidden;
     margin-bottom: 24px;
+    color: var(--text);
 }
 
 .glass-card:hover {
@@ -194,8 +234,8 @@ body::before {
 
 .card-header-custom {
     padding: 16px 20px;
-    background: rgba(10, 25, 47, 0.70);
-    border: 1.5px solid rgba(96, 165, 250, 0.25);
+    background: rgba(10, 25, 47, 0.50);
+    border: 1px solid var(--glass-border);
     border-radius: var(--radius);
     margin-bottom: 16px;
     font-weight: 700;
@@ -205,30 +245,41 @@ body::before {
     align-items: center;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="light"] .card-header-custom {
+    background: rgba(255, 255, 255, 0.6);
+    color: var(--text);
+    border-color: rgba(56, 189, 248, 0.3);
 }
 
 .card-header-custom i {
     color: var(--primary);
     font-size: 1.1rem;
-    filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.6));
+    margin-right: 10px;
 }
 
 .card-body {
     padding: 24px;
 }
 
-/* --- MINIMALIST INPUTS (iOS 17 Style) --- */
-/* --- INPUT FIELDS (Unified Dark Theme) --- */
+/* --- INPUTS --- */
 .custom-input,
 .form-control {
     background: rgba(255, 255, 255, 0.08) !important;
-    border: 1.5px solid rgba(96, 165, 250, 0.3) !important;
+    border: 1.5px solid var(--glass-border) !important;
     border-radius: var(--radius) !important;
     color: var(--text) !important;
     font-size: 15px;
     font-weight: 500;
     transition: all 0.3s ease;
+}
+
+[data-theme="light"] .custom-input,
+[data-theme="light"] .form-control {
+    background: rgba(255, 255, 255, 0.7) !important;
+    border-color: #cbd5e1 !important;
+    color: #1e293b !important;
 }
 
 .custom-input:focus,
@@ -238,153 +289,32 @@ body::before {
     box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2) !important;
 }
 
-.custom-input::placeholder,
-.form-control::placeholder {
-    color: var(--text-light);
-    opacity: 0.7;
-}
-
-/* --- FORMS (More Compact with White Typography) --- */
-.card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 16px;
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--glass-border);
-    transition: all 0.3s ease;
-    position: relative;
-    z-index: 1;
-}
-
-.card-title {
-    color: var(--text);
-    font-weight: 700;
-    font-size: 1.1rem;
-    margin-bottom: 16px;
-}
-
-.form-floating>.form-control {
-    background: rgba(255, 255, 255, 0.08);
-    min-height: 44px;
-    border: 1.5px solid rgba(96, 165, 250, 0.3);
-    border-radius: var(--radius);
-    transition: all 0.3s ease;
-    font-size: 15px;
-    color: var(--text);
-    box-shadow: none !important;
-}
-
-.form-floating>.form-control:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2) !important;
+[data-theme="light"] .custom-input:focus,
+[data-theme="light"] .form-control:focus {
+    background: #ffffff !important;
 }
 
 .form-floating>label {
-    padding-left: 1rem;
     color: var(--text-light);
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.form-floating>.form-control:focus~label,
-.form-floating>.form-control:not(:placeholder-shown)~label {
-    color: var(--accent);
-    font-weight: 600;
-    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
-    opacity: 1;
-}
-
-/* --- GENERATOR BLOCKS (Unified Dark Style) --- */
-.generator-block {
-    background: rgba(10, 25, 47, 0.40);
-    padding: 16px;
-    border-radius: var(--radius);
-    border: 1px solid rgba(96, 165, 250, 0.15);
-    margin-bottom: 16px;
-}
-
-.gen-title {
-    font-size: 0.85rem;
-    color: var(--primary);
-    font-weight: 700;
-    margin-bottom: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-
-.gen-title::before {
-    content: '';
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    background-color: var(--accent);
-    border-radius: 50%;
-    margin-right: 8px;
-}
-
-.section-subtitle {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--text);
-    font-weight: 700;
-    margin: 16px 0 12px 0;
-    display: block;
 }
 
 /* --- BUTTONS --- */
-.custom-btn {
+.custom-btn,
+.btn-primary {
     background: linear-gradient(135deg, var(--primary), var(--accent));
     border: none;
     border-radius: 16px;
-    padding: 16px;
+    padding: 12px 24px;
     font-weight: 700;
-    font-size: 1.1rem;
-    letter-spacing: 0.5px;
-    box-shadow: 0 10px 20px -5px rgba(2, 132, 199, 0.4);
-    color: white;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
     transition: all 0.3s ease;
 }
 
 .custom-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 15px 30px -5px rgba(2, 132, 199, 0.5);
-    background: linear-gradient(135deg, #023e7d, #0096c7);
-}
-
-.custom-btn:active {
-    transform: scale(0.98);
-}
-
-/* --- MODAL --- */
-.glass-modal {
-    background: #ffffff;
-    border-radius: 24px;
-    border: none;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-}
-
-.modal-header {
-    border-bottom: 1px solid #f1f5f9;
-}
-
-.modal-footer {
-    border-top: none;
-}
-
-/* Admin Trigger */
-.admin-trigger {
-    font-size: 1.5rem;
-    color: #cbd5e1;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-.admin-trigger:hover {
-    color: var(--text-light);
+    box-shadow: 0 8px 20px rgba(96, 165, 250, 0.5);
+    background: linear-gradient(135deg, #3b82f6, #0ea5e9);
 }
 
 /* PWA Install Button */
@@ -406,292 +336,143 @@ body::before {
 .btn-install-pwa:hover {
     transform: translateY(-2px);
     box-shadow: 0 15px 35px -5px rgba(2, 132, 199, 0.5);
-    background: linear-gradient(135deg, #023e7d, #0096c7);
-    color: white;
 }
 
-.btn-install-pwa:active {
-    transform: scale(0.98);
-}
-
-.btn-install-pwa img {
-    border-radius: 8px;
-}
-
-/* ============================================ */
-/* STATUS DASHBOARD */
-/* ============================================ */
-/* --- PREMIUM HEADER (Sticky Clean) --- */
-.app-header {
-    background: rgba(10, 25, 47, 0.90);
-    backdrop-filter: blur(16px) saturate(180%);
-    border-bottom: 1px solid rgba(96, 165, 250, 0.3);
-    padding: 8px 0;
-    text-align: center;
-    box-shadow: 0 4px 24px rgba(96, 165, 250, 0.15);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.nav-logo {
-    height: 32px;
-    margin-bottom: 2px;
-    filter: brightness(1.3) drop-shadow(0 0 12px rgba(96, 165, 250, 0.8)) drop-shadow(0 0 24px rgba(96, 165, 250, 0.4));
-}
-
-.header-subtitle {
+/* --- MODALS --- */
+.glass-modal {
+    background: var(--surface);
+    border: 1px solid var(--glass-border);
     color: var(--text);
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    margin: 0;
-    text-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
 }
 
+[data-theme="light"] .glass-modal {
+    background: #ffffff;
+    color: #0f172a;
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--glass-border);
+}
+
+.btn-close {
+    filter: invert(1);
+}
+
+[data-theme="light"] .btn-close {
+    filter: none;
+}
+
+/* --- STATUS DASHBOARD (Old style but themed) --- */
 .status-dashboard {
     background: var(--glass);
-    backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
     padding: 16px;
-    margin: 0 16px 20px;
-    box-shadow: var(--shadow-md);
+    margin-bottom: 20px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
     gap: 12px;
 }
 
-.status-row {
-    display: flex;
-    gap: 40px;
-    flex: 1;
-    justify-content: center;
+/* --- SCROLLBAR --- */
+::-webkit-scrollbar {
+    width: 8px;
 }
 
-.status-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    min-width: 120px;
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
 }
 
-.status-item i {
-    font-size: 20px;
-    color: var(--primary);
-    margin-bottom: 2px;
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
 }
 
-.status-label {
-    font-size: 0.7rem;
-    color: var(--text-light);
+[data-theme="light"] ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* --- UTILITIES --- */
+.section-subtitle {
+    font-size: 0.8rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-}
-
-.status-value {
-    font-size: 1rem;
+    letter-spacing: 1.5px;
     color: var(--text);
-    font-weight: 600;
-}
-
-.btn-force-update {
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 75, 141, 0.2);
-    white-space: nowrap;
-}
-
-.btn-force-update:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 75, 141, 0.3);
-}
-
-.btn-force-update:active {
-    transform: scale(0.98);
-}
-
-.btn-force-update i {
-    font-size: 16px;
-}
-
-/* ============================================ */
-/* BOTTOM ACTION BAR */
-/* ============================================ */
-
-.bottom-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    margin: 0 16px 40px;
-    background: var(--glass);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    border-radius: 16px;
-    box-shadow: var(--shadow-md);
-}
-
-.action-icons {
-    display: flex;
-    gap: 16px;
-}
-
-.app-controls {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-}
-
-.version-badge {
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    color: white;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 0.75rem;
     font-weight: 700;
-    letter-spacing: 0.5px;
+    margin: 16px 0 12px 0;
+    display: block;
 }
 
-.btn-update-compact {
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 75, 141, 0.2);
+/* --- MONITOR SPECIFIC GRID --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
 }
 
-.btn-update-compact:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 75, 141, 0.3);
-}
+/* Media queries from Monitor integrated here if needed, or kept in Monitor inline for specificity. 
+   Ideally all here, but for safety leaving complex grids in Monitor HTML if they were specific. 
+   (Checking file: they were inline. I will leave layout logic inline for now to avoid breaking grids, 
+   but themes will apply via vars). */
 
-.btn-update-compact:active {
-    transform: scale(0.95);
-}
-
-.btn-update-compact i {
-    font-size: 18px;
-}
-
-.btn-update-compact.updating i {
-    animation: spin 1s linear infinite;
-}
-
-/* Spinning animation for refresh icon */
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
-.btn-force-update.updating i {
-    animation: spin 1s linear infinite;
-}
-
-/* Mobile responsive */
-@media (max-width: 600px) {
-    .status-dashboard {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .status-row {
-        justify-content: space-between;
-    }
-
-    .btn-force-update {
-        width: 100%;
-        justify-content: center;
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
     }
 }
-/* Interactive Status Item */
-.status-item.interactive {
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+/* --- LIGHT THEME OVERRIDES --- */
+[data-theme='light'] {
+    --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    --surface: rgba(255, 255, 255, 0.85);
+    --glass: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(56, 189, 248, 0.3);
+    --text: #0f172a;
+    --text-light: #475569;
+    --card-bg: rgba(255, 255, 255, 0.6);
+    --chart-grid: rgba(0, 0, 0, 0.1);
+    --chart-text: #475569;
 }
 
-.status-item.interactive:hover {
-    background: rgba(255, 255, 255, 0.05);
-    transform: translateY(-2px);
-    border-color: var(--primary);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+/* --- EPIC ANIMATIONS & UTILS --- */
+[data-theme='light'] body::before {
+    background:
+        radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.15) 0%, transparent 35%),
+        radial-gradient(circle at 85% 80%, rgba(16, 185, 129, 0.10) 0%, transparent 35%),
+        radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 40%);
 }
 
-.status-item.interactive:active {
-    transform: translateY(0);
+.filter-white {
+    filter: brightness(0) invert(1) drop-shadow(0 2px 4px rgba(255, 255, 255, 0.3));
 }
 
-.status-item.interactive::after {
-    content: '\f12e'; /* Bootstrap Icon: box-arrow-up-right */
-    font-family: 'bootstrap-icons';
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    font-size: 0.7rem;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    color: var(--primary);
+[data-theme='light'] .filter-white {
+    filter: none;
 }
 
-.status-item.interactive:hover::after {
-    opacity: 0.8;
+.text-gradient {
+    background: linear-gradient(135deg,
+            #60a5fa 0%,
+            #22d3ee 33%,
+            #10b981 66%,
+            #a78bfa 100%);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientFlow 6s ease infinite;
 }
 
-/* History Modal Styles */
-#histContent .row-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.5rem 0.75rem;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    font-size: 0.9rem;
-}
-
-#histContent .row-item:last-child {
-    border-bottom: none;
-}
-
-#histContent .row-label {
-    color: #64748b;
-    font-weight: 500;
-}
-
-#histContent .row-value {
-    color: #0f172a;
-    font-weight: 600;
-}
-
-
-/* Force Modal Text Color Update */
-.glass-modal, .glass-modal * {
-    color: #1e293b !important;
-}
-.glass-modal .text-muted {
-    color: #64748b !important;
+@keyframes gradientFlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
 }
 
