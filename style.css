@@ -694,3 +694,19 @@ body::before {
     }
 }
 
+
+/* --- INSTALL BUTTON TEXT FIX --- */
+.install-title {
+    color: white; /* Default Dark Mode */
+}
+.install-subtitle {
+    color: rgba(255, 255, 255, 0.5); /* Default Dark Mode */
+}
+
+[data-theme='light'] .install-title {
+    color: var(--primary-dark);
+}
+[data-theme='light'] .install-subtitle {
+    color: var(--text-light);
+}
+
