@@ -628,3 +628,61 @@ body::before {
         justify-content: center;
     }
 }
+/* Interactive Status Item */
+.status-item.interactive {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.status-item.interactive:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.status-item.interactive:active {
+    transform: translateY(0);
+}
+
+.status-item.interactive::after {
+    content: '\f12e'; /* Bootstrap Icon: box-arrow-up-right */
+    font-family: 'bootstrap-icons';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 0.7rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    color: var(--primary);
+}
+
+.status-item.interactive:hover::after {
+    opacity: 0.8;
+}
+
+/* History Modal Styles */
+#histContent .row-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    font-size: 0.9rem;
+}
+
+#histContent .row-item:last-child {
+    border-bottom: none;
+}
+
+#histContent .row-label {
+    color: #64748b;
+    font-weight: 500;
+}
+
+#histContent .row-value {
+    color: #0f172a;
+    font-weight: 600;
+}
+

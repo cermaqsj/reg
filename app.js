@@ -36,6 +36,7 @@ const fieldIds = [
 window.onload = () => {
     checkLastSubmission();
     setupNetworkListener();
+    fetchLastServerSubmission(); // Fetch real server data
 
     // Load cached Responsable
     const savedName = localStorage.getItem('savedResponsable');
@@ -43,6 +44,67 @@ window.onload = () => {
         document.getElementById('responsable').value = savedName;
     }
 };
+
+// --- INTERACTIVE LAST SUBMISSION ---
+let lastServerData = null;
+
+async function fetchLastServerSubmission() {
+    const statusEl = document.getElementById("lastSubmit");
+    if (!navigator.onLine) {
+        statusEl.innerText = "Offline";
+        return;
+    }
+
+    try {
+        const response = await fetch(API_URL + "?action=latest");
+        const data = await response.json();
+
+        if (data.error) {
+            statusEl.innerText = "Sin datos";
+            return;
+        }
+
+        lastServerData = data;
+        statusEl.innerText = data.timestamp || "Desconocido";
+        statusEl.classList.add("text-primary", "fw-bold");
+
+    } catch (e) {
+        console.error("Fetch Error:", e);
+        // Fallback to local logic if server fails
+        updateLastSubmitTime();
+    }
+}
+
+function showLastSubmissionDetails() {
+    if (!lastServerData) {
+        // Retry if clicked and empty
+        const statusEl = document.getElementById("lastSubmit");
+        if (statusEl.innerText === "Offline") return alert("No se puede ver el historial sin conexión.");
+
+        fetchLastServerSubmission().then(() => {
+            if (lastServerData) showLastSubmissionDetails();
+            else alert("No se pudo obtener información del servidor.");
+        });
+        return;
+    }
+
+    // Populate Modal
+    document.getElementById("histTimestamp").innerText = lastServerData.timestamp;
+    document.getElementById("histResponsable").innerText = lastServerData.responsable;
+
+    const contentDiv = document.getElementById("histContent");
+    contentDiv.innerHTML = "";
+
+    lastServerData.data.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "row-item";
+        div.innerHTML = `<span class="row-label">${item[0]}</span><span class="row-value">${item[1]}</span>`;
+        contentDiv.appendChild(div);
+    });
+
+    const modal = new bootstrap.Modal(document.getElementById('historyModal'));
+    modal.show();
+}
 
 // Robust Network Status (Pill)
 function setupNetworkListener() {

@@ -44,10 +44,11 @@
                 <span class="status-label">Sheets</span>
                 <span class="status-value" id="sheetsStatus">Verificando...</span>
             </div>
-            <div class="status-item">
+            <div class="status-item interactive" onclick="showLastSubmissionDetails()"
+                title="Ver detalles del último envío">
                 <i class="bi bi-clock-history"></i>
                 <span class="status-label">Último Envío</span>
-                <span class="status-value" id="lastSubmit">Nunca</span>
+                <span class="status-value" id="lastSubmit">Cargando...</span>
             </div>
         </div>
     </div>
@@ -399,6 +400,41 @@
                     <button type="button" class="btn btn-primary" onclick="submitPinChange()">
                         <i class="bi bi-check-circle"></i> Cambiar PIN
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div class="modal fade" id="historyModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content glass-modal">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold text-primary">
+                        <i class="bi bi-clock-history me-2"></i>Último Registro
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-2">
+                    <div class="text-center mb-3">
+                        <div class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3 mb-2">
+                            <i class="bi bi-calendar-event me-1"></i> <span id="histTimestamp" class="fw-bold">--</span>
+                        </div>
+                        <h6 class="text-muted small text-uppercase ls-1">Responsable</h6>
+                        <p id="histResponsable" class="fw-bold fs-5 mb-0 text-dark">--</p>
+                    </div>
+                    <hr class="opacity-10">
+                    <div id="histContent" class="d-flex flex-column gap-2">
+                        <!-- Content injected via JS -->
+                        <div class="text-center text-muted py-4">
+                            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                            <p class="small mt-2">Cargando detalles...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-outline-secondary w-100 rounded-pill"
+                        data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
