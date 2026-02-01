@@ -3,7 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Registro Planta | Cermaq</title>
 
     <!-- Google Fonts -->
@@ -21,7 +25,7 @@
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="Q.png">
-    <meta name="theme-color" content="#f8fafc">
+    <meta name="theme-color" content="#60a5fa">
 </head>
 
 <body>
@@ -417,6 +421,32 @@
             document.getElementById('authPin').value = '';
         });
 
+        // Mobile: Prevent accidental navigation/close
+        let formHasData = false;
+        document.getElementById('registroForm').addEventListener('input', () => {
+            formHasData = true;
+        });
+
+        // Warn before leaving page with unsaved data
+        window.addEventListener('beforeunload', (e) => {
+            if (formHasData) {
+                e.preventDefault();
+                e.returnValue = '';
+                return '';
+            }
+        });
+
+        // Handle back button on mobile
+        window.addEventListener('popstate', (e) => {
+            if (formHasData) {
+                if (!confirm('¿Seguro que quieres salir? Los datos no guardados se perderán.')) {
+                    window.history.pushState(null, '', window.location.href);
+                }
+            }
+        });
+
+        // Push initial state for back button handling
+        window.history.pushState(null, '', window.location.href);
         // Service Worker Registration
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./service-worker.js');
