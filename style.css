@@ -26,7 +26,16 @@
     /* Fully circular */
 }
 
+html {
+    background-color: #0a192f;
+    /* Match bottom of gradient */
+    height: 100%;
+    overflow-x: hidden;
+}
+
 body {
+    overscroll-behavior-y: none;
+    /* Prevent white box on pull */
     font-family: 'Outfit', sans-serif;
     background:
         linear-gradient(rgba(10, 25, 47, 0.88), rgba(15, 35, 70, 0.92)),
