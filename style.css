@@ -710,3 +710,77 @@ body::before {
     color: var(--text-light);
 }
 
+
+/* --- FOOTER & ADMIN CONTROLS --- */
+.bottom-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--glass-border);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 0 0 20px 20px;
+}
+
+.action-icons {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.admin-trigger {
+    font-size: 1.6rem; /* Larger icons */
+    opacity: 0.7;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--text-light);
+}
+
+.admin-trigger:hover {
+    opacity: 1;
+    transform: scale(1.15) rotate(15deg);
+    color: var(--primary);
+}
+
+.app-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.version-badge {
+    font-size: 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 12px;
+    color: var(--text-light);
+}
+
+.btn-update-compact {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.3s;
+    padding: 0;
+}
+
+.btn-update-compact:hover {
+    transform: rotate(180deg);
+    color: var(--primary);
+}
+
+[data-theme='light'] .bottom-actions {
+    background: rgba(255, 255, 255, 0.3);
+}
+[data-theme='light'] .admin-trigger, 
+[data-theme='light'] .btn-update-compact {
+    color: var(--text-light);
+}
+[data-theme='light'] .admin-trigger:hover, 
+[data-theme='light'] .btn-update-compact:hover {
+    color: var(--primary-dark);
+}
+
