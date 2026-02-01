@@ -264,14 +264,13 @@ body::before {
     opacity: 1;
 }
 
-/* --- GENERATOR BLOCKS --- */
+/* --- GENERATOR BLOCKS (Unified Dark Style) --- */
 .generator-block {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 16px;
-    border: 1px solid #f1f5f9;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-    margin-bottom: 20px;
+    background: rgba(10, 25, 47, 0.40);
+    padding: 16px;
+    border-radius: var(--radius);
+    border: 1px solid rgba(96, 165, 250, 0.15);
+    margin-bottom: 16px;
 }
 
 .gen-title {
@@ -279,10 +278,14 @@ body::before {
     color: var(--primary);
     font-weight: 700;
     margin-bottom: 12px;
-    display: flex;
-    align-items: center;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+}
+
+display: flex;
+align-items: center;
+text-transform: uppercase;
+letter-spacing: 0.5px;
 }
 
 .gen-title::before {
