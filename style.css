@@ -999,3 +999,104 @@ body::before {
     }
 }
 
+
+/* ============================================ */
+/* MODAL VISIBILITY FIX */
+/* ============================================ */
+
+.glass-modal {
+    background: rgba(15, 23, 42, 0.98) !important; /* Almost solid dark */
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.glass-modal .modal-header {
+    border-bottom: 1px solid rgba(96, 165, 250, 0.2);
+    background: rgba(30, 41, 59, 0.5);
+}
+
+.glass-modal .modal-title {
+    color: #f1f5f9 !important;
+    font-weight: 700;
+}
+
+.glass-modal .modal-body {
+    color: #f1f5f9 !important;
+}
+
+.glass-modal .modal-footer {
+    border-top: 1px solid rgba(96, 165, 250, 0.2);
+}
+
+/* Light Mode */
+[data-theme='light'] .glass-modal {
+    background: rgba(255, 255, 255, 0.98) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .glass-modal .modal-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(248, 250, 252, 0.8);
+}
+
+[data-theme='light'] .glass-modal .modal-title {
+    color: #0f172a !important;
+}
+
+[data-theme='light'] .glass-modal .modal-body {
+    color: #1e293b !important;
+}
+
+[data-theme='light'] .glass-modal .modal-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure text in alerts is visible */
+.glass-modal .alert {
+    background: rgba(96, 165, 250, 0.15) !important;
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    color: #f1f5f9 !important;
+}
+
+[data-theme='light'] .glass-modal .alert {
+    background: rgba(96, 165, 250, 0.1) !important;
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    color: #0f172a !important;
+}
+
+/* Form inputs in modal */
+.glass-modal .form-control {
+    background: rgba(30, 41, 59, 0.6) !important;
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    color: #f1f5f9 !important;
+}
+
+.glass-modal .form-control:focus {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border-color: #60a5fa;
+    color: #f1f5f9 !important;
+}
+
+[data-theme='light'] .glass-modal .form-control {
+    background: rgba(248, 250, 252, 0.8) !important;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    color: #0f172a !important;
+}
+
+[data-theme='light'] .glass-modal .form-control:focus {
+    background: white !important;
+    border-color: #60a5fa;
+    color: #0f172a !important;
+}
+
+/* Labels in modal */
+.glass-modal label {
+    color: #cbd5e1 !important;
+}
+
+[data-theme='light'] .glass-modal label {
+    color: #475569 !important;
+}
+
