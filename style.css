@@ -296,12 +296,12 @@ body::before {
 }
 
 .section-subtitle {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    color: #94a3b8;
-    font-weight: 800;
-    margin: 20px 0 12px 0;
+    color: var(--text);
+    font-weight: 700;
+    margin: 16px 0 12px 0;
     display: block;
 }
 
