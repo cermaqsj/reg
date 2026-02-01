@@ -784,3 +784,43 @@ body::before {
     color: var(--primary-dark);
 }
 
+
+/* --- FINAL AESTHETIC POLISH --- */
+.dashboard-grid {
+    justify-content: center; /* Center cards horizontally */
+    max-width: 1920px;
+    margin: 0 auto;
+}
+
+/* Enhanced Glass Cards */
+.group-card {
+    backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+        0 2px 4px -1px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='light'] .group-card {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Interactive Data Items */
+.data-item {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
+                box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                background 0.2s ease;
+}
+
+.data-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+[data-theme='dark'] .data-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
