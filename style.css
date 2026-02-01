@@ -824,3 +824,54 @@ body::before {
     background: rgba(255, 255, 255, 0.05);
 }
 
+
+/* --- MOBILE HEADER FIX --- */
+@media (max-width: 768px) {
+    .glass-header {
+        padding: 0.75rem 0 !important;
+    }
+
+    .glass-header > div {
+        flex-direction: column !important;
+        gap: 0.75rem;
+    }
+
+    .glass-header img {
+        height: 24px !important;
+    }
+
+    .glass-header h1 {
+        font-size: 0.7rem !important;
+        letter-spacing: 1px !important;
+        text-align: center;
+    }
+
+    .glass-header .border-start {
+        border-left: none !important;
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+    }
+
+    /* Remove absolute positioning on mobile */
+    .glass-header > div > div:last-child {
+        position: static !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .glass-header h1 {
+        font-size: 0.65rem !important;
+    }
+
+    .glass-header button,
+    .glass-header a {
+        width: 36px !important;
+        height: 36px !important;
+    }
+
+    .glass-header button i,
+    .glass-header a i {
+        font-size: 1rem !important;
+    }
+}
+
