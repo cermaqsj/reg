@@ -603,9 +603,13 @@
         async function fetchData() {
             startTimer();
             const btn = document.getElementById('btnRefresh');
-            const icon = btn.querySelector('i');
-            btn.disabled = true;
-            icon.classList.add('spin-anim');
+            let icon = null;
+
+            if (btn) {
+                icon = btn.querySelector('i');
+                btn.disabled = true;
+                if (icon) icon.classList.add('spin-anim');
+            }
 
             try {
                 const response = await fetch(API_URL + "?action=latest");
@@ -615,15 +619,18 @@
             } catch (error) {
                 console.error(error);
             } finally {
-                btn.disabled = false;
-                icon.classList.remove('spin-anim');
+                if (btn) {
+                    btn.disabled = false;
+                    if (icon) icon.classList.remove('spin-anim');
+                }
             }
         }
 
         function renderDashboard(data) {
             const lastUpdateEl = document.getElementById('lastUpdate');
-            // Backend now sends timestamp as pre-formatted string, just display it
-            lastUpdateEl.textContent = data.timestamp || '--/--/---- --:--';
+            if (lastUpdateEl) {
+                lastUpdateEl.textContent = data.timestamp || '--/--/---- --:--';
+            }
 
             const container = document.getElementById('mainContainer');
             const raw = data.data || [];
