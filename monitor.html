@@ -440,7 +440,12 @@
                         CERMAQ STA JUANA</h1>
                 </div>
             </div>
-            <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <button id="btnThemeToggle"
+                    class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center border-opacity-25"
+                    style="width: 32px; height: 32px;" title="Cambiar Tema">
+                    <i class="bi bi-brightness-high-fill"></i>
+                </button>
                 <a href="index.html"
                     class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-flex align-items-center justify-content-center"
                     style="width: 32px; height: 32px;" title="Ir al Ingreso">
@@ -563,24 +568,22 @@
                 html += `
                 <div class="dashboard-col">
                     <div class="group-card">
-                        <div class="group-header text-accent fw-bold text-uppercase small d-flex align-items-center gap-2">
-                             <i class="bi ${group.icon}"></i> ${group.title}
+                        <div class="group-header">
+                             <i class="bi ${group.icon} me-2"></i> ${group.title}
                         </div>
                         <div class="group-body">`;
 
                 group.sections.forEach(sec => {
                     html += `<div class="sub-section">
                         <div class="sub-title">${sec.title}</div>
-                        <div class="row g-1">`;
+                        <div class="data-grid">`; // Changed from row to data-grid
 
                     sec.items.forEach(item => {
                         html += `
-                            <div class="col">
-                                <div class="data-item">
-                                    <div class="val-text">${item.v}</div>
-                                    <div class="label-text">${item.l}</div>
-                                    <div class="unit-text">${item.u}</div>
-                                </div>
+                            <div class="data-item">
+                                <div class="val-text">${item.v}</div>
+                                <div class="label-text">${item.l}</div>
+                                <div class="unit-text">${item.u}</div>
                             </div>`;
                     });
 
@@ -606,6 +609,20 @@
             });
         }
     </script>
+    <!-- PWA Install Button (Hidden by default) -->
+    <div id="installButton" class="position-fixed bottom-0 end-0 m-4 p-3 glass-card"
+        style="display: none; cursor: pointer; z-index: 9999;">
+        <div class="d-flex align-items-center gap-2">
+            <img src="./Q.png" width="32" height="32" class="rounded">
+            <div>
+                <h6 class="m-0 text-white" style="font-size: 0.9rem;">Instalar App</h6>
+                <small class="text-white-50" style="font-size: 0.75rem;">Acceso rápido</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logic -->
+    <script src="theme-pwa.js"></script>
 </body>
 
 </html>

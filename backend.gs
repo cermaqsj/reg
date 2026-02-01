@@ -521,6 +521,15 @@ function updateDashboard(data) {
     sheetView.autoResizeColumns(1, 2);
     
   } catch(e) {
+    Logger.log("Error updating dashboard: " + e.toString());
+  }
+}
+
+// Ping for Network Check OR Get Latest Data
+function doGet(e) {
+  // Helper for JSON return
+  const returnJSON = (data) => ContentService.createTextOutput(JSON.stringify(data)).setMimeType(ContentService.MimeType.JSON);
+  const lock = LockService.getScriptLock();
 
   if (!e.parameter) {
     // Default Ping
