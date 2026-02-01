@@ -1,4 +1,4 @@
-const CACHE_NAME = 'planta-v6.1-enterprise'; // v6.1: Added Monitor Navigation
+const CACHE_NAME = 'planta-v7.0-enterprise'; // v7.0: Epic Design Port
 const ASSETS = [
     './',
     './index.html?v=5',
