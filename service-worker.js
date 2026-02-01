@@ -1,4 +1,4 @@
-const CACHE_NAME = 'planta-v6.0-enterprise'; // v6.0: Enterprise Ultra-Robust System
+const CACHE_NAME = 'planta-v6.1-enterprise'; // v6.1: Added Monitor Navigation
 const ASSETS = [
     './',
     './index.html?v=5',
