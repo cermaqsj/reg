@@ -42,11 +42,6 @@
     <div class="status-dashboard fade-in-down" style="animation-delay: 0.1s;">
         <div class="status-row">
             <div class="status-item">
-                <i class="bi bi-rocket-takeoff"></i>
-                <span class="status-label">Versión</span>
-                <span class="status-value" id="appVersion">v6.0.0</span>
-            </div>
-            <div class="status-item">
                 <i class="bi bi-cloud-check" id="sheetsIcon"></i>
                 <span class="status-label">Sheets</span>
                 <span class="status-value" id="sheetsStatus">Verificando...</span>
@@ -57,9 +52,6 @@
                 <span class="status-value" id="lastSubmit">Nunca</span>
             </div>
         </div>
-        <button class="btn-force-update" id="btnForceUpdate" title="Limpiar cache y actualizar a última versión">
-            <i class="bi bi-arrow-clockwise"></i> Actualizar App
-        </button>
     </div>
 
     <form id="registroForm" novalidate onsubmit="handleSubmit(event)">
@@ -296,11 +288,19 @@
     </form>
 
 
-    <!-- Admin Trigger -->
-    <div class="text-center pb-4">
-        <i class="bi bi-gear-fill admin-trigger" onclick="toggleAdmin()" title="Modo Admin"></i>
-        <i class="bi bi-key-fill admin-trigger ms-3" onclick="openChangePinModal()" title="Cambiar PIN"
-            style="color: #f59e0b;"></i>
+    <!-- Admin Trigger & App Controls -->
+    <div class="bottom-actions">
+        <div class="action-icons">
+            <i class="bi bi-gear-fill admin-trigger" onclick="toggleAdmin()" title="Modo Admin"></i>
+            <i class="bi bi-key-fill admin-trigger" onclick="openChangePinModal()" title="Cambiar PIN"
+                style="color: #f59e0b;"></i>
+        </div>
+        <div class="app-controls">
+            <span class="version-badge" id="appVersion">v6.0.0</span>
+            <button class="btn-update-compact" id="btnForceUpdate" title="Limpiar cache y actualizar a última versión">
+                <i class="bi bi-arrow-clockwise"></i>
+            </button>
+        </div>
     </div>
 
     <!-- PWA Install Button -->

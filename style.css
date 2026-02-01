@@ -351,20 +351,20 @@ body {
 
 .status-row {
     display: flex;
-    gap: 20px;
+    gap: 40px;
     flex: 1;
-    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .status-item {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    min-width: 90px;
+    min-width: 120px;
 }
 
 .status-item i {
-    font-size: 18px;
+    font-size: 20px;
     color: var(--primary);
     margin-bottom: 2px;
 }
@@ -378,7 +378,7 @@ body {
 }
 
 .status-value {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: var(--text);
     font-weight: 600;
 }
@@ -411,6 +411,76 @@ body {
 
 .btn-force-update i {
     font-size: 16px;
+}
+
+/* ============================================ */
+/* BOTTOM ACTION BAR */
+/* ============================================ */
+
+.bottom-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    margin: 0 16px 40px;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+}
+
+.action-icons {
+    display: flex;
+    gap: 16px;
+}
+
+.app-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.version-badge {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.btn-update-compact {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 75, 141, 0.2);
+}
+
+.btn-update-compact:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 75, 141, 0.3);
+}
+
+.btn-update-compact:active {
+    transform: scale(0.95);
+}
+
+.btn-update-compact i {
+    font-size: 18px;
+}
+
+.btn-update-compact.updating i {
+    animation: spin 1s linear infinite;
 }
 
 /* Spinning animation for refresh icon */
