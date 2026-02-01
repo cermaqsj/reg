@@ -212,6 +212,31 @@ body::before {
 }
 
 /* --- MINIMALIST INPUTS (iOS 17 Style) --- */
+/* --- INPUT FIELDS (Unified Dark Theme) --- */
+.custom-input,
+.form-control {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1.5px solid rgba(96, 165, 250, 0.3) !important;
+    border-radius: var(--radius) !important;
+    color: var(--text) !important;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.custom-input:focus,
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2) !important;
+}
+
+.custom-input::placeholder,
+.form-control::placeholder {
+    color: var(--text-light);
+    opacity: 0.7;
+}
+
 /* --- FORMS (More Compact with White Typography) --- */
 .card {
     background: var(--surface);
