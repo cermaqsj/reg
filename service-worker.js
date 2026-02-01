@@ -1,4 +1,4 @@
-const CACHE_NAME = 'planta-v5.2-auth'; // v5.2: Secure Authentication System
+const CACHE_NAME = 'planta-v6.0-enterprise'; // v6.0: Enterprise Ultra-Robust System
 const ASSETS = [
     './',
     './index.html?v=5',

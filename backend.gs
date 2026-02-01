@@ -42,6 +42,71 @@ function validatePIN(inputPin) {
   return inputHash === storedHash;
 }
 
+// ============================================
+// RATE LIMITING (Anti-Brute Force)
+// ============================================
+
+// Cache de intentos fallidos (se resetea al reiniciar script, pero suficiente)
+const failedAttempts = {};
+
+function validatePINWithRateLimit(inputPin, userIdentifier) {
+  const key = userIdentifier || 'unknown';
+  const now = Date.now();
+  
+  // Inicializar si no existe
+  if (!failedAttempts[key]) {
+    failedAttempts[key] = {count: 0, lockedUntil: 0, firstAttempt: now};
+  }
+  
+  const attempt = failedAttempts[key];
+  
+  // Limpiar contador si pasó 1 hora desde primer intento
+  if (now - attempt.firstAttempt > 3600000) {
+    failedAttempts[key] = {count: 0, lockedUntil: 0, firstAttempt: now};
+  }
+  
+  // Si está bloqueado, rechazar
+  if (attempt.lockedUntil > now) {
+    const minsRemaining = Math.ceil((attempt.lockedUntil - now) / 60000);
+    logSecurityEvent(`Intento bloqueado (${minsRemaining} min restantes)`, key);
+    return {
+      valid: false, 
+      locked: true,
+      message: `Demasiados intentos fallidos. Bloqueado por ${minsRemaining} minuto(s).`
+    };
+  }
+  
+  // Validar PIN
+  const isValid = validatePIN(inputPin);
+  
+  if (!isValid) {
+    attempt.count++;
+    
+    // Bloquear después de 5 intentos
+    if (attempt.count >= 5) {
+      attempt.lockedUntil = now + (5 * 60 * 1000); // 5 minutos
+      logSecurityEvent(`Usuario bloqueado (5 intentos fallidos)`, key);
+      return {
+        valid: false, 
+        locked: true,
+        message: "Demasiados intentos fallidos. Bloqueado por 5 minutos."
+      };
+    }
+    
+    const attemptsLeft = 5 - attempt.count;
+    return {
+      valid: false, 
+      locked: false,
+      attemptsLeft: attemptsLeft,
+      message: `PIN incorrecto. ${attemptsLeft} intentos restantes.`
+    };
+  }
+  
+  // PIN correcto, resetear contador
+  failedAttempts[key] = {count: 0, lockedUntil: 0, firstAttempt: now};
+  return {valid: true, locked: false};
+}
+
 // Obtener password de administrador
 function getAdminPassword() {
   const props = PropertiesService.getScriptProperties();
@@ -143,6 +208,66 @@ const SHEET_NAME_VIEW = "Resumen_Diario";
 const SHEET_NAME_O2 = "Historial_O2";
 const SHEET_NAME_ENERGY = "Historial_Energia";
 
+// ============================================
+// VALIDACIÓN DE RANGOS (Data Integrity)
+// ============================================
+
+const FIELD_VALIDATION = {
+  // O2 Fields (índices 0-8)
+  0: {name: 'O2 Comp KW', min: 0, max: 500, unit: 'KW', critical: true},
+  1: {name: 'O2 Comp M3', min: 0, max: 1000, unit: 'm³', critical: false},
+  2: {name: 'O2 Comp HRS', min: 0, max: 24, unit: 'hrs', critical: false},
+  3: {name: 'O2 HP1 KW', min: 0, max: 300, unit: 'KW', critical: true},
+  4: {name: 'O2 HP1 M3', min: 0, max: 1000, unit: 'm³', critical: false},
+  5: {name: 'O2 HP1 HRS', min: 0, max: 24, unit: 'hrs', critical: false},
+  6: {name: 'O2 HP2 KW', min: 0, max: 300, unit: 'KW', critical: true},
+  7: {name: 'O2 HP2 M3', min: 0, max: 1000, unit: 'm³', critical: false},
+  8: {name: 'O2 HP2 HRS', min: 0, max: 24, unit: 'hrs', critical: false},
+  
+  // Energy Fields (índices 9-16)
+  9: {name: 'Gen1 KW', min: 0, max: 1000, unit: 'KW', critical: true},
+  10: {name: 'Gen1 HRS', min: 0, max: 24, unit: 'hrs', critical: false},
+  11: {name: 'Gen2 KW', min: 0, max: 1000, unit: 'KW', critical: true},
+  12: {name: 'Gen2 HRS', min: 0, max: 24, unit: 'hrs', critical: false},
+  13: {name: 'RED V12', min: 200, max: 500, unit: 'V', critical: true},
+  14: {name: 'RED KW', min: 0, max: 2000, unit: 'KW', critical: true},
+  15: {name: 'Baterías V', min: 0, max: 100, unit: 'V', critical: true},
+  16: {name: 'Grupo Emerg KW', min: 0, max: 500, unit: 'KW', critical: false}
+};
+
+function validateDataRanges(valores) {
+  const warnings = [];
+  const errors = [];
+  
+  Object.keys(FIELD_VALIDATION).forEach((index) => {
+    const i = parseInt(index);
+    const value = parseFloat(valores[i]);
+    const field = FIELD_VALIDATION[i];
+    
+    // Skip si está vacío (campos opcionales)
+    if (!value && value !== 0) return;
+    
+    // Validar si es número
+    if (isNaN(value)) {
+      warnings.push(`${field.name}: valor no numérico "${valores[i]}"`);
+      return;
+    }
+    
+    // Validar rango
+    if (value < field.min || value > field.max) {
+      const msg = `${field.name}: ${value}${field.unit} fuera de rango esperado (${field.min}-${field.max}${field.unit})`;
+      
+      if (field.critical) {
+        errors.push(msg);
+      } else {
+        warnings.push(msg);
+      }
+    }
+  });
+  
+  return {errors, warnings, isValid: errors.length === 0};
+}
+
 function setupSpreadsheet() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   
@@ -236,15 +361,47 @@ function doPost(e) {
       return returnJSON(result);
     }
     
-    // --- VALIDACIÓN DE PIN PARA MODO NORMAL ---
+    // --- VALIDACIÓN DE PIN CON RATE LIMITING ---
     if (data.modo !== "ADMIN") {
-      // Modo normal requiere PIN válido
-      if (!data.authPin || !validatePIN(data.authPin)) {
-        logSecurityEvent("Intento fallido de envío (PIN incorrecto)", data.responsable || "Desconocido");
+      // Usar responsable como identificador para rate limiting
+      const userIdentifier = data.responsable || 'unknown';
+      const pinCheck = validatePINWithRateLimit(data.authPin, userIdentifier);
+      
+      if (!pinCheck.valid) {
+        // Log con device info si está disponible
+        const deviceInfo = data.userAgent ? ` (${data.userAgent.substring(0, 50)})` : '';
+        logSecurityEvent(
+          pinCheck.locked ? "Intento bloqueado" : "PIN incorrecto", 
+          userIdentifier + deviceInfo
+        );
+        
         return returnJSON({
-          result: "error", 
-          message: "PIN de autorización incorrecto"
+          result: "error",
+          message: pinCheck.message,
+          locked: pinCheck.locked,
+          attemptsLeft: pinCheck.attemptsLeft
         });
+      }
+    }
+    
+    // --- VALIDACIÓN DE RANGOS DE DATOS ---
+    if (data.modo !== "ADMIN" && data.valores) {
+      const validation = validateDataRanges(data.valores);
+      
+      // Si hay errores críticos, rechazar
+      if (!validation.isValid) {
+        logSecurityEvent("Datos rechazados (fuera de rango)", data.responsable);
+        return returnJSON({
+          result: "error",
+          message: "Valores fuera de rangos permitidos",
+          errors: validation.errors,
+          warnings: validation.warnings
+        });
+      }
+      
+      // Si solo hay warnings, registrar pero permitir
+      if (validation.warnings.length > 0) {
+        logSecurityEvent(`Advertencias de rango (${validation.warnings.length})`, data.responsable);
       }
     }
     

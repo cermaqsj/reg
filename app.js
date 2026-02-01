@@ -1,6 +1,7 @@
-// Final Production Build v5.2 - Secure Authentication System
+// Enterprise-Grade Production Build v6.0 - Ultra Robust System
 const API_URL = "https://script.google.com/macros/s/AKfycbzmX1LnuYCYjnOK3WZTcXmdvfs9PtNZj2vmMl6LVVBIrqG1FTIJ-t9JpwiHztCWGCav1A/exec";
 const PASSWORD_ADMIN = "mantencioncermaq";
+const APP_VERSION = "6.0.0";
 
 // Service Worker Update Handling
 if ('serviceWorker' in navigator) {
@@ -170,7 +171,8 @@ function sendData() {
         password: adminPassword,
         responsable: responsable,
         valores: valores,
-        authPin: authPin  // Incluir PIN para validación
+        authPin: authPin,  // Incluir PIN para validación
+        userAgent: navigator.userAgent  // Device fingerprinting
     };
 
     console.log("Payload enviado (PIN oculto en log):", { ...payload, authPin: "****" });
@@ -187,9 +189,21 @@ function sendData() {
         })
         .then(data => {
             if (data.result === "success") {
-                alert("✅ Confirmado: " + data.message);
+                showToast("Datos guardados exitosamente", "success");
+                clearBackup();  // Limpiar auto-save solo después de éxito
                 finishSubmission();
             } else {
+                // Manejo de errores específicos
+                if (data.locked) {
+                    showToast(`Bloqueado por intentos fallidos: ${data.message}`, "error");
+                } else if (data.attemptsLeft !== undefined) {
+                    showToast(`PIN incorrecto. ${data.attemptsLeft} intentos restantes.`, "warning");
+                } else if (data.errors) {
+                    showToast("Valores fuera de rangos permitidos", "error");
+                    console.error("Errores de validación:", data.errors);
+                } else {
+                    showToast(data.message || "Error del servidor", "error");
+                }
                 throw new Error(data.message || "El servidor rechazó los datos");
             }
         })
@@ -317,3 +331,110 @@ async function submitPinChange() {
         alert("Error de conexión: " + err.message);
     }
 }
+
+// ============================================
+// AUTO-SAVE & CRASH RECOVERY SYSTEM
+// ============================================
+
+let autoSaveInterval = null;
+
+function startAutoSave() {
+    if (autoSaveInterval) clearInterval(autoSaveInterval);
+
+    autoSaveInterval = setInterval(() => {
+        const formData = captureFormData();
+        if (formData && formData.hasData) {
+            localStorage.setItem('formBackup', JSON.stringify(formData));
+            localStorage.setItem('formBackupTime', Date.now());
+        }
+    }, 3000);
+}
+
+function captureFormData() {
+    const responsable = document.getElementById('responsable').value;
+    const valores = fieldIds.map(id => document.getElementById(id)?.value || "");
+    const hasData = responsable || valores.some(v => v);
+
+    return { responsable, valores, timestamp: new Date().toISOString(), hasData };
+}
+
+function restoreFormData(data) {
+    if (data.responsable) document.getElementById('responsable').value = data.responsable;
+    fieldIds.forEach((id, i) => {
+        const el = document.getElementById(id);
+        if (el && data.valores[i]) el.value = data.valores[i];
+    });
+}
+
+function checkForRecovery() {
+    const backup = localStorage.getItem('formBackup');
+    const backupTime = localStorage.getItem('formBackupTime');
+
+    if (!backup || !backupTime) return;
+
+    const data = JSON.parse(backup);
+    const elapsed = Date.now() - parseInt(backupTime);
+
+    if (elapsed > 86400000 || !data.hasData) {
+        clearBackup();
+        return;
+    }
+
+    const timestamp = new Date(data.timestamp).toLocaleString('es-CL');
+    if (confirm(`🔄 Datos no enviados detectados\n\nResponsable: ${data.responsable || '(vacío)'}\nGuardado: ${timestamp}\n\n¿Restaurar datos?`)) {
+        restoreFormData(data);
+        showToast('Datos restaurados exitosamente', 'success');
+    } else {
+        clearBackup();
+    }
+}
+
+function clearBackup() {
+    localStorage.removeItem('formBackup');
+    localStorage.removeItem('formBackupTime');
+}
+
+// Toast Notifications
+function showToast(message, type = 'info') {
+    let container = document.getElementById('toastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;max-width:350px;';
+        document.body.appendChild(container);
+    }
+
+    const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+    const colors = { success: '#10b981', error: '#ef4444', warning: '#f59e0b', info: '#3b82f6' };
+
+    const toast = document.createElement('div');
+    toast.innerHTML = `<div style="background:white;border-left:4px solid ${colors[type]};border-radius:8px;padding:16px;margin-bottom:10px;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:flex;align-items:center;gap:12px;animation:slideIn 0.3s ease-out;"><span style="font-size:24px;">${icons[type]}</span><span style="flex:1;color:#1f2937;font-weight:500;">${message}</span></div>`;
+
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease-in';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+
+// Add animations CSS
+if (!document.getElementById('toastAnimations')) {
+    const style = document.createElement('style');
+    style.id = 'toastAnimations';
+    style.textContent = '@keyframes slideIn{from{transform:translateX(400px);opacity:0}to{transform:translateX(0);opacity:1}}@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(400px);opacity:0}}';
+    document.head.appendChild(style);
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', () => {
+    checkForRecovery();
+    startAutoSave();
+    console.log(`%c🚀 Sistema v${APP_VERSION}`, 'color: #10b981; font-weight: bold; font-size: 14px');
+});
+
+// Override finishSubmission to clear backup
+const originalFinish = finishSubmission;
+finishSubmission = function () {
+    clearBackup();
+    if (originalFinish) originalFinish();
+};
