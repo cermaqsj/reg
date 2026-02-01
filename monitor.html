@@ -540,14 +540,16 @@
     <!-- CHART.JS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Charts Container -->
-    <div class="row mx-3 mb-4">
+    <!-- Charts Container (Hidden by Default) -->
+    <div id="chartsContainer" class="row mx-3 mb-4" style="display: none;">
         <!-- Chart 1: O2 Generation -->
         <div class="col-12 col-xl-4 mb-3">
             <div class="glass-card h-100 p-3">
                 <h6 class="text-white-50 text-uppercase ls-1 mb-3"><i class="bi bi-wind me-2"></i>Generación O2 (7 Días)
                 </h6>
-                <canvas id="chartO2Gen"></canvas>
+                <div style="position: relative; height: 250px;">
+                    <canvas id="chartO2Gen"></canvas>
+                </div>
             </div>
         </div>
         <!-- Chart 2: O2 Efficiency -->
@@ -555,7 +557,9 @@
             <div class="glass-card h-100 p-3">
                 <h6 class="text-white-50 text-uppercase ls-1 mb-3"><i class="bi bi-speedometer2 me-2"></i>Consumo O2
                 </h6>
-                <canvas id="chartO2Cons"></canvas>
+                <div style="position: relative; height: 250px;">
+                    <canvas id="chartO2Cons"></canvas>
+                </div>
             </div>
         </div>
         <!-- Chart 3: Energy Matrix -->
@@ -563,13 +567,44 @@
             <div class="glass-card h-100 p-3">
                 <h6 class="text-white-50 text-uppercase ls-1 mb-3"><i class="bi bi-lightning-charge me-2"></i>Matriz
                     Energética</h6>
-                <canvas id="chartEnergy"></canvas>
+                <div style="position: relative; height: 250px;">
+                    <canvas id="chartEnergy"></canvas>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- MAIN DASHBOARD -->
-    <div class="status-dashboard"></div>
+    <div class="status-dashboard">
+        <!-- Status Items Left -->
+        <div class="status-row">
+            <div class="status-item">
+                <i class="bi bi-cloud-check" id="sheetsIcon"></i>
+                <span class="status-label">Base de Datos</span>
+                <span class="status-value" id="sheetsStatus">Conectando...</span>
+            </div>
+            <div class="status-item">
+                <i class="bi bi-clock-history"></i>
+                <span class="status-label">Última Carga</span>
+                <span class="status-value" id="lastSubmit">--</span>
+            </div>
+        </div>
+
+        <!-- Center Controls -->
+        <div class="d-flex gap-2">
+            <button class="btn-force-update" onclick="toggleCharts()" title="Ver/Ocultar Gráficos">
+                <i class="bi bi-graph-up-arrow"></i> <span id="btnChartLabel">Ver Gráficos</span>
+            </button>
+            <button class="btn-force-update" id="btnRefresh" onclick="manualRefresh()">
+                <i class="bi bi-arrow-clockwise"></i> Actualizar
+            </button>
+        </div>
+
+        <!-- Controls Right -->
+        <button class="btn-force-update" id="btnForceUpdate" title="Forzar recarga completa">
+            <i class="bi bi-cloud-arrow-down"></i> V6.0
+        </button>
+    </div>
 
     <div class="container-fluid px-4" id="mainContainer">
         <!-- Dashboard Grid injected here -->
@@ -716,8 +751,29 @@
 
         // --- CHART LOGIC ---
         let charts = {};
+        let chartsVisible = false;
+
+        function toggleCharts() {
+            const container = document.getElementById('chartsContainer');
+            const label = document.getElementById('btnChartLabel');
+
+            chartsVisible = !chartsVisible;
+
+            if (chartsVisible) {
+                container.style.display = 'flex';
+                label.innerText = "Ocultar";
+                // Trigger update if empty or stale
+                if (Object.keys(charts).length === 0) updateCharts();
+            } else {
+                container.style.display = 'none';
+                label.innerText = "Ver Gráficos";
+            }
+        }
 
         async function updateCharts() {
+            // Only fetch/render if visible to save resources and avoid bugs
+            if (!chartsVisible) return;
+
             try {
                 const response = await fetch(API_URL + "?action=history");
                 const json = await response.json();
@@ -755,9 +811,12 @@
         }
 
         function renderChart(id, type, labels, datasets) {
+            const canvas = document.getElementById(id);
+            if (!canvas) return;
+
             if (charts[id]) charts[id].destroy();
 
-            const ctx = document.getElementById(id).getContext('2d');
+            const ctx = canvas.getContext('2d');
             charts[id] = new Chart(ctx, {
                 type: type,
                 data: { labels, datasets },
@@ -777,7 +836,7 @@
         }
 
         // Init Charts
-        updateCharts();
+        // updateCharts(); // Removed auto-call
         setInterval(updateCharts, 300000); // 5 min refresh
     </script>
 </body>
