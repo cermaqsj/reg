@@ -282,11 +282,6 @@ body::before {
     letter-spacing: 0.5px;
 }
 
-display: flex;
-align-items: center;
-text-transform: uppercase;
-letter-spacing: 0.5px;
-}
 
 .gen-title::before {
     content: '';
