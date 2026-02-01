@@ -1,4 +1,4 @@
-/* Premium Dark Professional Design v7.0 - Ultra Premium with Theme Support */
+﻿/* Premium Dark Professional Design v7.0 - Ultra Premium with Theme Support */
 :root {
     /* --- SHARED PALETTE --- */
     --primary: #60a5fa;
@@ -1001,11 +1001,11 @@ body::before {
 
 
 /* ============================================ */
-/* MODAL VISIBILITY FIX */
+/* MODAL VISIBILITY FIX - CONSISTENT COLORS */
 /* ============================================ */
 
 .glass-modal {
-    background: rgba(15, 23, 42, 0.98) !important; /* Almost solid dark */
+    background: rgba(15, 23, 42, 0.98) !important;
     backdrop-filter: blur(20px);
     border: 1px solid rgba(96, 165, 250, 0.3);
     border-radius: 20px;
@@ -1017,12 +1017,17 @@ body::before {
     background: rgba(30, 41, 59, 0.5);
 }
 
-.glass-modal .modal-title {
-    color: #f1f5f9 !important;
-    font-weight: 700;
-}
-
-.glass-modal .modal-body {
+/* ALL TEXT IN MODAL - LIGHT COLOR IN DARK MODE */
+.glass-modal .modal-title,
+.glass-modal .modal-body,
+.glass-modal .modal-body *,
+.glass-modal .modal-footer,
+.glass-modal h1, .glass-modal h2, .glass-modal h3, 
+.glass-modal h4, .glass-modal h5, .glass-modal h6,
+.glass-modal p, .glass-modal span, .glass-modal div,
+.glass-modal label, .glass-modal small,
+.glass-modal .text-muted,
+.glass-modal .small {
     color: #f1f5f9 !important;
 }
 
@@ -1030,7 +1035,7 @@ body::before {
     border-top: 1px solid rgba(96, 165, 250, 0.2);
 }
 
-/* Light Mode */
+/* Light Mode - ALL TEXT DARK */
 [data-theme='light'] .glass-modal {
     background: rgba(255, 255, 255, 0.98) !important;
     border: 1px solid rgba(0, 0, 0, 0.1);
@@ -1041,28 +1046,46 @@ body::before {
     background: rgba(248, 250, 252, 0.8);
 }
 
-[data-theme='light'] .glass-modal .modal-title {
+[data-theme='light'] .glass-modal .modal-title,
+[data-theme='light'] .glass-modal .modal-body,
+[data-theme='light'] .glass-modal .modal-body *,
+[data-theme='light'] .glass-modal .modal-footer,
+[data-theme='light'] .glass-modal h1, 
+[data-theme='light'] .glass-modal h2, 
+[data-theme='light'] .glass-modal h3,
+[data-theme='light'] .glass-modal h4, 
+[data-theme='light'] .glass-modal h5, 
+[data-theme='light'] .glass-modal h6,
+[data-theme='light'] .glass-modal p, 
+[data-theme='light'] .glass-modal span, 
+[data-theme='light'] .glass-modal div,
+[data-theme='light'] .glass-modal label, 
+[data-theme='light'] .glass-modal small,
+[data-theme='light'] .glass-modal .text-muted,
+[data-theme='light'] .glass-modal .small {
     color: #0f172a !important;
-}
-
-[data-theme='light'] .glass-modal .modal-body {
-    color: #1e293b !important;
 }
 
 [data-theme='light'] .glass-modal .modal-footer {
     border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* Ensure text in alerts is visible */
+/* Alerts in modal */
 .glass-modal .alert {
     background: rgba(96, 165, 250, 0.15) !important;
     border: 1px solid rgba(96, 165, 250, 0.3);
+}
+
+.glass-modal .alert * {
     color: #f1f5f9 !important;
 }
 
 [data-theme='light'] .glass-modal .alert {
     background: rgba(96, 165, 250, 0.1) !important;
     border: 1px solid rgba(96, 165, 250, 0.2);
+}
+
+[data-theme='light'] .glass-modal .alert * {
     color: #0f172a !important;
 }
 
@@ -1071,6 +1094,10 @@ body::before {
     background: rgba(30, 41, 59, 0.6) !important;
     border: 1px solid rgba(96, 165, 250, 0.3);
     color: #f1f5f9 !important;
+}
+
+.glass-modal .form-control::placeholder {
+    color: rgba(241, 245, 249, 0.5) !important;
 }
 
 .glass-modal .form-control:focus {
@@ -1085,18 +1112,14 @@ body::before {
     color: #0f172a !important;
 }
 
+[data-theme='light'] .glass-modal .form-control::placeholder {
+    color: rgba(15, 23, 42, 0.5) !important;
+}
+
 [data-theme='light'] .glass-modal .form-control:focus {
     background: white !important;
     border-color: #60a5fa;
     color: #0f172a !important;
 }
 
-/* Labels in modal */
-.glass-modal label {
-    color: #cbd5e1 !important;
-}
-
-[data-theme='light'] .glass-modal label {
-    color: #475569 !important;
-}
 
