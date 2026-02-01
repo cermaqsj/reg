@@ -1,4 +1,4 @@
-const CACHE_NAME = 'monitor-v6';
+const CACHE_NAME = 'monitor-v7';
 const urlsToCache = [
     './monitor.html',
     './monitor-manifest.json',
