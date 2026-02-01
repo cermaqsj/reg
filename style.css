@@ -833,11 +833,12 @@ body::before {
 
     .glass-header > div {
         flex-direction: column !important;
-        gap: 0.75rem;
+        align-items: center !important;
+        gap: 0.5rem;
     }
 
     .glass-header img {
-        height: 24px !important;
+        height: 28px !important;
     }
 
     .glass-header h1 {
@@ -852,9 +853,16 @@ body::before {
         margin-left: 0 !important;
     }
 
-    /* Remove absolute positioning on mobile */
+    /* Remove absolute positioning and center buttons */
     .glass-header > div > div:last-child {
         position: static !important;
+    }
+
+    /* Center the logo/text container */
+    .glass-header > div > div:first-child {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
     }
 }
 
