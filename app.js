@@ -299,7 +299,10 @@ function finishSubmission() {
             <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
             <h2 class="mt-3">Registro Exitoso</h2>
             <p class="text-muted">Registro verificado y guardado.</p>
-            <button class="btn btn-outline-primary mt-4" onclick="location.reload()">Nuevo Registro (Admin)</button>
+            <div class="mt-4 d-flex gap-3 justify-content-center">
+                <button class="btn btn-outline-primary" onclick="location.reload()">Nuevo Registro (Admin)</button>
+                <a href="monitor.html" class="btn btn-primary text-white"><i class="bi bi-display"></i> Ver Monitor</a>
+            </div>
         </div>
         `;
     }
