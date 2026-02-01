@@ -632,3 +632,65 @@ body::before {
     }
 }
 
+
+/* --- OPTIMIZATION FOR LAPTOPS (1366x768) --- */
+@media (min-width: 1200px) and (max-width: 1450px) {
+    /* Force 4 columns to fit width */
+    .dashboard-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 12px;
+        padding-bottom: 20px;
+    }
+
+    /* Compact Cards */
+    .group-header {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+
+    .group-body {
+        padding: 10px;
+    }
+
+    .sub-section {
+        margin-bottom: 8px;
+    }
+
+    .sub-title {
+        margin-bottom: 4px;
+        font-size: 0.65rem;
+    }
+
+    /* Compact Data Items */
+    .data-item {
+        padding: 6px;
+    }
+
+    .val-text {
+        font-size: 1.1rem;
+    }
+
+    .label-text {
+        font-size: 0.65rem;
+        margin-top: 2px;
+    }
+
+    .unit-text {
+        font-size: 0.6rem;
+    }
+
+    /* Reduce Header Height */
+    .glass-header {
+        padding: 6px 0;
+        margin-bottom: 12px !important;
+    }
+
+    .nav-logo {
+        height: 24px;
+    }
+
+    #mainContainer {
+        padding-top: 0.5rem;
+    }
+}
+
