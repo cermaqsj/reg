@@ -1,12 +1,17 @@
 {
-    "name": "O2 y Energía - CERMAQ STA JUANA",
-    "short_name": "O2 y Energía",
-    "description": "Monitor en tiempo real de sistemas de oxígeno y energía - CERMAQ Santa Juana",
+    "name": "Monitor O2 y Energía - PC",
+    "short_name": "Monitor PC",
+    "description": "Dashboard de monitoreo en tiempo real optimizado para pantallas de escritorio - Cermaq Santa Juana",
     "start_url": "./monitor.html",
-    "display": "standalone",
+    "display": "minimal-ui",
     "background_color": "#0a0f1a",
     "theme_color": "#60a5fa",
     "orientation": "landscape",
+    "categories": [
+        "productivity",
+        "utilities",
+        "monitoring"
+    ],
     "icons": [
         {
             "src": "./Q.svg",
