@@ -180,7 +180,7 @@ function changeAdminPassword(currentPassword, newPassword) {
   return {success: true, message: "Password de administrador actualizado exitosamente"};
 }
 
-// Registrar eventos de seguridad
+// Registrar eventos de seguridad y errores de sistema
 function logSecurityEvent(event, user) {
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -196,6 +196,24 @@ function logSecurityEvent(event, user) {
     logSheet.appendRow([new Date(), event, user]);
   } catch (e) {
     Logger.log("Error logging security event: " + e.toString());
+  }
+}
+
+function logSystemError(type, errorMsg) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let logSheet = ss.getSheetByName('System_Log');
+    
+    if (!logSheet) {
+      logSheet = ss.insertSheet('System_Log');
+      logSheet.getRange('A1:C1').setValues([['Timestamp', 'Tipo', 'Error']]);
+      logSheet.getRange('A1:C1').setFontWeight('bold').setBackground('#fee2e2'); // Light red
+      logSheet.setFrozenRows(1);
+    }
+    
+    logSheet.appendRow([new Date(), type, errorMsg]);
+  } catch (e) {
+    Logger.log("Critical: Failed to log system error: " + e.toString());
   }
 }
 
@@ -344,7 +362,7 @@ function doPost(e) {
   if (!e.postData) return returnJSON({result: "error", message: "No data received"});
 
   const lock = LockService.getScriptLock();
-  lock.tryLock(10000); 
+  lock.tryLock(30000); // 30 seconds for robustness 
 
   try {
     const data = JSON.parse(e.postData.contents);
@@ -454,6 +472,7 @@ function doPost(e) {
     return returnJSON({result: "success", message: "Datos guardados en Historiales"});
     
   } catch (err) {
+    logSystemError("CRASH", err.toString()); // Log critical failures
     return returnJSON({result: "error", message: "Error interno: " + err.toString()});
   } finally {
     lock.releaseLock();
