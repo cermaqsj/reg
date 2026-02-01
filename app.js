@@ -234,7 +234,9 @@ function sendData() {
         responsable: responsable,
         valores: valores,
         authPin: authPin,  // Incluir PIN para validación
-        userAgent: navigator.userAgent  // Device fingerprinting
+        authPin: authPin,  // Incluir PIN para validación
+        userAgent: navigator.userAgent,  // Device fingerprinting
+        localTimestamp: new Date().toLocaleString("es-CL", { timeZone: "America/Santiago" }) // Force Device/Chile Time
     };
 
     console.log("Payload enviado (PIN oculto en log):", { ...payload, authPin: "****" });

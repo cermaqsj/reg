@@ -440,8 +440,8 @@ function doPost(e) {
     }
 
     // --- NORMAL MODE ---
-    // Save timestamp as-is (Google Sheets will handle timezone automatically)
-    const timestamp = new Date();
+    // Use Device Timestamp if available (Critical for user trust), otherwise Server Time
+    const timestamp = data.localTimestamp || new Date();
     
     // 1. Write to Master DB
     const nuevaFila = [timestamp, data.responsable, ...data.valores];
