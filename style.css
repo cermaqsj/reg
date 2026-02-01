@@ -686,3 +686,12 @@ body::before {
     font-weight: 600;
 }
 
+
+/* Force Modal Text Color Update */
+.glass-modal, .glass-modal * {
+    color: #1e293b !important;
+}
+.glass-modal .text-muted {
+    color: #64748b !important;
+}
+

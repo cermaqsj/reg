@@ -406,15 +406,11 @@ function doPost(e) {
     if (data.modo !== "ADMIN" && data.valores) {
       const validation = validateDataRanges(data.valores);
       
-      // Si hay errores críticos, rechazar
+      // Si hay errores críticos, SOLO REGISTRAR pero PERMITIR (Solicitud Usuario)
       if (!validation.isValid) {
-        logSecurityEvent("Datos rechazados (fuera de rango)", data.responsable);
-        return returnJSON({
-          result: "error",
-          message: "Valores fuera de rangos permitidos",
-          errors: validation.errors,
-          warnings: validation.warnings
-        });
+        logSecurityEvent(`Datos fuera de rango (${validation.errors.join(", ")})`, data.responsable);
+        // NO BLOQUEAMOS, solo registramos.
+        // return returnJSON({ ... }); <--- Disabled
       }
       
       // Si solo hay warnings, registrar pero permitir
