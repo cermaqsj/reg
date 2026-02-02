@@ -1124,24 +1124,21 @@ body::before {
 
 
 
-/* Fix for floating labels in modal inputs */
+/* Force labels to appear above inputs, not floating */
+.glass-modal .form-label {
+    color: #f1f5f9 !important;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+[data-theme='light'] .glass-modal .form-label {
+    color: #0f172a !important;
+}
+
+/* Hide any floating labels that might still exist */
 .glass-modal .form-floating > label {
-    color: rgba(241, 245, 249, 0.7) !important;
-    background: transparent !important;
+    display: none !important;
 }
 
-.glass-modal .form-floating > .form-control:focus ~ label,
-.glass-modal .form-floating > .form-control:not(:placeholder-shown) ~ label {
-    color: #60a5fa !important;
-    background: transparent !important;
-}
-
-[data-theme='light'] .glass-modal .form-floating > label {
-    color: rgba(15, 23, 42, 0.7) !important;
-}
-
-[data-theme='light'] .glass-modal .form-floating > .form-control:focus ~ label,
-[data-theme='light'] .glass-modal .form-floating > .form-control:not(:placeholder-shown) ~ label {
-    color: #2563eb !important;
-}
 
