@@ -41,7 +41,7 @@
     <div id="refreshTimer"></div>
 
     <header class="glass-header">
-        <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center justify-content-center w-100 position-relative">
             <div class="d-flex align-items-center gap-3">
                 <img src="Cermaq_logo2.png" alt="Cermaq" height="32" class="d-inline-block align-text-top filter-white">
                 <div class="border-start border-secondary ps-3 ms-2">
@@ -49,28 +49,30 @@
                         CERMAQ STA JUANA</h1>
                 </div>
             </div>
-            <div class="d-flex align-items-center gap-2">
-                <button id="btnThemeToggle"
-                    class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center border-opacity-25"
-                    style="width: 32px; height: 32px;" title="Cambiar Tema">
-                    <i class="bi bi-brightness-high-fill"></i>
-                </button>
-                <a href="https://docs.google.com/spreadsheets/d/1hciA4lp6se_GZFqG2XZgCxH11tKg2n63Sk39S4xP-5E/edit?usp=sharing"
-                    target="_blank"
-                    class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-flex align-items-center justify-content-center"
-                    style="width: 32px; height: 32px;" title="Ver Hoja de Cálculo">
-                    <i class="bi bi-file-earmark-spreadsheet"></i>
-                </a>
-                <a href="index.html"
-                    class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-flex align-items-center justify-content-center"
-                    style="width: 32px; height: 32px;" title="Ir al Ingreso">
-                    <i class="bi bi-pencil-square"></i>
-                </a>
+
+            <div class="d-flex align-items-center gap-2" style="position: absolute; right: 0;">
                 <div
-                    class="d-flex align-items-center gap-2 px-2 py-1 border border-success border-opacity-25 bg-success bg-opacity-10 rounded-pill">
+                    class="d-flex align-items-center gap-2 px-2 py-1 border border-success border-opacity-25 bg-success bg-opacity-10 rounded-pill me-2">
                     <div class="status-dot"></div>
                     <span id="statusText" class="small text-success fw-bold" style="font-size: 0.7rem;">ONLINE</span>
                 </div>
+
+                <button id="btnThemeToggle"
+                    class="btn btn-outline-light btn-sm rounded-circle d-flex align-items-center justify-content-center border-opacity-25"
+                    style="width: 40px; height: 40px;" title="Cambiar Tema">
+                    <i class="bi bi-brightness-high-fill" style="font-size: 1.2rem;"></i>
+                </button>
+                <a href="https://docs.google.com/spreadsheets/d/1hciA4lp6se_GZFqG2XZgCxH11tKg2n63Sk39S4xP-5E/edit?usp=sharing"
+                    target="_blank"
+                    class="btn btn-outline-light btn-sm rounded-circle d-flex align-items-center justify-content-center border-opacity-25"
+                    style="width: 40px; height: 40px;" title="Ver Hoja de Cálculo">
+                    <i class="bi bi-file-earmark-spreadsheet" style="font-size: 1.2rem;"></i>
+                </a>
+                <a href="index.html"
+                    class="btn btn-outline-light btn-sm rounded-circle d-flex align-items-center justify-content-center border-opacity-25"
+                    style="width: 40px; height: 40px;" title="Ir al Ingreso">
+                    <i class="bi bi-pencil-square" style="font-size: 1.2rem;"></i>
+                </a>
             </div>
         </div>
     </header>
