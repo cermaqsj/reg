@@ -75,59 +75,38 @@
         </div>
     </header>
 
+    <div id="initial-loader"
+        style="position: fixed; inset: 0; background: #0a192f; z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease;">
+        <img src="Cermaq_logo2.png" alt="Cermaq" height="60" class="mb-4 filter-white" style="opacity: 0.8;">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+        <div class="mt-3 text-white-50 small" style="font-family: 'Outfit', sans-serif; letter-spacing: 2px;">CARGANDO
+            SISTEMA...</div>
+    </div>
+
     <!-- MAIN DASHBOARD -->
     <div class="container-fluid px-4" id="mainContainer">
-
         <!-- Status Dashboard -->
         <div class="status-dashboard fade-in-down" style="animation-delay: 0.1s; margin-bottom: 1.5rem;">
-            <div class="d-flex align-items-center gap-4 w-100 justify-content-center flex-wrap">
-                <!-- Last Update -->
-                <div class="d-flex align-items-center gap-2">
-                    <div class="bg-primary bg-opacity-10 p-2 rounded-circle text-primary">
-                        <i class="bi bi-clock-history"></i>
-                    </div>
-                    <div class="d-flex flex-column">
-                        <span class="text-muted small text-uppercase fw-bold"
-                            style="font-size: 0.7rem; letter-spacing: 1px;">Última Actualización</span>
-                        <span id="lastUpdate" class="fw-bold fs-5">--/--/---- --:--</span>
-                    </div>
-                </div>
-
-                <!-- Separator -->
-                <div class="d-none d-md-block border-end border-secondary opacity-25" style="height: 30px;"></div>
-
-                <!-- Responsable -->
-                <div class="d-flex align-items-center gap-2">
-                    <div class="bg-success bg-opacity-10 p-2 rounded-circle text-success">
-                        <i class="bi bi-person-check-fill"></i>
-                    </div>
-                    <div class="d-flex flex-column">
-                        <span class="text-muted small text-uppercase fw-bold"
-                            style="font-size: 0.7rem; letter-spacing: 1px;">Responsable</span>
-                        <span id="lastResponsable" class="fw-bold fs-5">--</span>
-                    </div>
-                </div>
-            </div>
+            <!-- ... content ... -->
         </div>
 
         <!-- Dashboard Grid injected here -->
-        <div class="d-flex justify-content-center align-items-center h-100" id="loadingSpinner">
-            <div class="spinner-border text-primary opacity-50" role="status"></div>
-        </div>
+        <!-- loadingSpinner removed as we have full screen loader now -->
+        <div id="gridContainer"></div>
     </div>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbzCVzAxRBbXzJP1LQFOodK-UZ7bGMqG5h4xdHYMvVDTNLiVLf2jbMf9azAiLMlXq0yrMw/exec";
         const REFRESH_INTERVAL = 30000;
+        let isFirstLoad = true;
 
         async function fetchData() {
-            // Show Loading Bar
+            // Top Bar Logic (only for updates, not initial load)
             const timerEl = document.getElementById('refreshTimer');
-            if (timerEl) {
+            if (timerEl && !isFirstLoad) {
                 timerEl.style.width = '0%';
                 timerEl.style.opacity = '1';
                 timerEl.style.transition = 'width 2s ease-in-out';
-                // Fake progress to 90%
                 setTimeout(() => timerEl.style.width = '90%', 50);
             }
 
@@ -149,17 +128,29 @@
 
                 if (result.error) return;
                 renderDashboard(result);
+
+                // Remove Initial Loader with Fade Out
+                const loader = document.getElementById('initial-loader');
+                if (loader && isFirstLoad) {
+                    // Ensure fonts are loaded before revealing
+                    document.fonts.ready.then(() => {
+                        loader.style.opacity = '0';
+                        setTimeout(() => loader.remove(), 500);
+                        isFirstLoad = false;
+                    });
+                }
+
             } catch (error) {
                 console.error(error);
                 updateConnectionStatus(false);
             } finally {
-                // Complete Loading Bar
-                if (timerEl) {
+                // Complete Loading Bar (Top)
+                if (timerEl && !isFirstLoad) {
                     timerEl.style.width = '100%';
                     setTimeout(() => {
                         timerEl.style.opacity = '0';
                         setTimeout(() => {
-                            timerEl.style.transition = 'none'; // Disable transition for instant reset
+                            timerEl.style.transition = 'none';
                             timerEl.style.width = '0%';
                         }, 300);
                     }, 500);
