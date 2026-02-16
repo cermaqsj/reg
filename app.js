@@ -198,8 +198,32 @@ function handleSubmit(event) {
 
 // Data Submission with Server Validation
 function sendData() {
+    // Check offline status and Queue
     if (!navigator.onLine) {
-        alert("Estás offline. Conéctate a internet para enviar los datos.");
+        const responsable = document.getElementById('confirmResponsable').value;
+        const authPin = document.getElementById('authPin').value;
+        if (!responsable || !responsable.trim()) { alert("Nombre requerido"); return; }
+
+        // Prepare data for queue
+        const valores = fieldIds.map(id => {
+            const el = document.getElementById(id);
+            return el ? (el.value || "") : "";
+        });
+
+        const formData = {
+            modo: appMode,
+            password: adminPassword,
+            valores: valores,
+            authPin: authPin,
+            userAgent: navigator.userAgent,
+            localTimestamp: new Date().toLocaleString("es-CL", { timeZone: "America/Santiago" })
+        };
+
+        if (OfflineManager.savePending(formData, responsable, authPin)) {
+            showToast("📡 Guardado OFFLINE. Se enviará al conectar.", "info");
+            clearBackup();
+            finishSubmission();
+        }
         return;
     }
 
@@ -633,29 +657,29 @@ finishSubmission = function () {
 
 const OfflineManager = {
     STORAGE_KEY: 'pending_submission',
-    
+
     init() {
         // Check for pending submissions on load
         this.checkPending();
-        
+
         // Listen for online events
         window.addEventListener('online', () => {
             console.log('?? Connection restored');
             this.updateConnectionStatus(true);
             this.attemptSync();
         });
-        
+
         window.addEventListener('offline', () => {
             console.log('?? Connection lost');
             this.updateConnectionStatus(false);
         });
-        
+
         // Initial connection status
         this.updateConnectionStatus(navigator.onLine);
-        
+
         console.log('? Offline Manager initialized');
     },
-    
+
     savePending(formData, responsable, pin) {
         const pending = {
             timestamp: new Date().toISOString(),
@@ -665,7 +689,7 @@ const OfflineManager = {
             attempts: 0,
             lastAttempt: null
         };
-        
+
         try {
             localStorage.setItem(this.STORAGE_KEY, JSON.stringify(pending));
             console.log('?? Submission saved offline');
@@ -677,7 +701,7 @@ const OfflineManager = {
             return false;
         }
     },
-    
+
     getPending() {
         try {
             const data = localStorage.getItem(this.STORAGE_KEY);
@@ -687,30 +711,30 @@ const OfflineManager = {
             return null;
         }
     },
-    
+
     clearPending() {
         localStorage.removeItem(this.STORAGE_KEY);
         this.showPendingBadge(false);
         console.log('? Pending submission cleared');
     },
-    
+
     async attemptSync() {
         const pending = this.getPending();
         if (!pending) return;
-        
+
         if (!navigator.onLine) {
             console.log('?? Still offline, cannot sync');
             return;
         }
-        
+
         console.log('?? Attempting to sync pending submission...');
         showToast('?? Sincronizando registro pendiente...', 'info');
-        
+
         // Update attempt count
         pending.attempts++;
         pending.lastAttempt = new Date().toISOString();
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(pending));
-        
+
         try {
             // Prepare payload exactly like normal submission
             const payload = {
@@ -719,49 +743,49 @@ const OfflineManager = {
                 timestamp: pending.timestamp,
                 ...pending.data
             };
-            
+
             const response = await fetch(API_URL, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            
+
             // Since no-cors doesn't give us response, we assume success
             console.log('? Sync successful');
             showToast('? Registro enviado exitosamente', 'success');
             this.clearPending();
-            
+
             // Update last submission time
             localStorage.setItem('lastSubmissionTime', Date.now());
             updateLastSubmitTime();
-            
+
         } catch (error) {
             console.error('? Sync failed:', error);
             showToast('?? Error al sincronizar. Se reintentar� autom�ticamente.', 'warning');
         }
     },
-    
+
     checkPending() {
         const pending = this.getPending();
         if (pending) {
             console.log('?? Found pending submission from:', pending.timestamp);
             this.showPendingBadge(true);
-            
+
             // Auto-attempt sync if online
             if (navigator.onLine) {
                 setTimeout(() => this.attemptSync(), 2000);
             }
         }
     },
-    
+
     showPendingBadge(show) {
         const badge = document.getElementById('pendingBadge');
         if (badge) {
             badge.style.display = show ? 'flex' : 'none';
         }
     },
-    
+
     updateConnectionStatus(isOnline) {
         const indicator = document.getElementById('connectionStatus');
         if (indicator) {
@@ -769,31 +793,31 @@ const OfflineManager = {
             indicator.title = isOnline ? 'Conectado' : 'Sin conexi�n';
         }
     },
-    
+
     showPendingModal() {
         const pending = this.getPending();
         if (!pending) {
             showToast('No hay registros pendientes', 'info');
             return;
         }
-        
+
         const modal = new bootstrap.Modal(document.getElementById('pendingModal'));
-        document.getElementById('pendingTimestamp').textContent = 
+        document.getElementById('pendingTimestamp').textContent =
             new Date(pending.timestamp).toLocaleString('es-CL');
         document.getElementById('pendingResponsable').textContent = pending.responsable;
         document.getElementById('pendingAttempts').textContent = pending.attempts;
-        
+
         modal.show();
     },
-    
+
     async manualRetry() {
         if (!navigator.onLine) {
             showToast('?? Sin conexi�n a internet', 'warning');
             return;
         }
-        
+
         await this.attemptSync();
-        
+
         // Close modal if sync was successful
         const pending = this.getPending();
         if (!pending) {
@@ -801,7 +825,7 @@ const OfflineManager = {
             if (modal) modal.hide();
         }
     },
-    
+
     deletePending() {
         if (confirm('�Est� seguro de eliminar el registro pendiente? Esta acci�n no se puede deshacer.')) {
             this.clearPending();
