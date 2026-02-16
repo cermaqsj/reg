@@ -33,37 +33,45 @@
 
 <body>
 
-    <!-- Minimal Premium Header -->
-    <!-- Minimal Premium Header -->
-    <header class="glass-header d-flex justify-content-between align-items-center px-3">
-        <div class="d-flex align-items-center justify-content-center w-100 position-relative">
-            <div class="d-flex align-items-center gap-3">
-                <img src="Cermaq_logo2.png" alt="Cermaq" height="32" class="d-inline-block align-text-top filter-white">
-                <div class="border-start border-secondary ps-3 ms-2">
-                    <h1 class="h6 m-0 fw-bold text-gradient text-uppercase" style="letter-spacing: 2px;">O2 Y ENERGÍA -
-                        CERMAQ STA JUANA</h1>
-                </div>
-            </div>
+    <!-- FULL SCREEN INITIAL LOADER -->
+    <div id="initial-loader"
+        style="position: fixed; inset: 0; background: #0a192f; z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease;">
+        <img src="Cermaq_logo2.png" alt="Cermaq" height="60" class="mb-4 filter-white" style="opacity: 0.8;">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+        <div class="mt-3 text-white-50 small" style="font-family: 'Outfit', sans-serif; letter-spacing: 2px;">
+            CARGANDO...</div>
+    </div>
 
-            <div class="d-flex align-items-center gap-2" style="position: absolute; right: 0;">
-                <button id="btnThemeToggle"
-                    class="btn btn-outline-light btn-sm rounded-circle d-flex align-items-center justify-content-center border-opacity-25"
-                    style="width: 40px; height: 40px;" title="Cambiar Tema">
-                    <i class="bi bi-brightness-high-fill" style="font-size: 1.2rem;"></i>
-                </button>
-                <a href="https://docs.google.com/spreadsheets/d/1hciA4lp6se_GZFqG2XZgCxH11tKg2n63Sk39S4xP-5E/edit?usp=sharing" target="_blank"
-                    class="btn btn-outline-light btn-sm rounded-circle d-flex align-items-center justify-content-center border-opacity-25"
-                    style="width: 40px; height: 40px;" title="Ver Hoja de Cálculo">
-                    <i class="bi bi-file-earmark-spreadsheet" style="font-size: 1.2rem;"></i>
-                </a>
-                <a href="monitor.html"
-                    class="btn btn-outline-light btn-sm rounded-circle d-flex align-items-center justify-content-center border-opacity-25"
-                    style="width: 40px; height: 40px;" title="Ir al Monitor">
-                    <i class="bi bi-activity" style="font-size: 1.2rem;"></i>
-                </a>
+    <!-- Minimal Premium Header -->
+    <div class="d-flex align-items-center justify-content-center w-100 position-relative">
+        <div class="d-flex align-items-center gap-3">
+            <img src="Cermaq_logo2.png" alt="Cermaq" height="32" class="d-inline-block align-text-top filter-white">
+            <div class="border-start border-secondary ps-3 ms-2">
+                <h1 class="h6 m-0 fw-bold text-gradient text-uppercase" style="letter-spacing: 2px;">O2 Y ENERGÍA -
+                    CERMAQ STA JUANA</h1>
             </div>
-
         </div>
+
+        <div class="d-flex align-items-center gap-2" style="position: absolute; right: 0;">
+            <button id="btnThemeToggle"
+                class="btn btn-outline-light btn-sm rounded-circle d-flex align-items-center justify-content-center border-opacity-25"
+                style="width: 40px; height: 40px;" title="Cambiar Tema">
+                <i class="bi bi-brightness-high-fill" style="font-size: 1.2rem;"></i>
+            </button>
+            <a href="https://docs.google.com/spreadsheets/d/1hciA4lp6se_GZFqG2XZgCxH11tKg2n63Sk39S4xP-5E/edit?usp=sharing"
+                target="_blank"
+                class="btn btn-outline-light btn-sm rounded-circle d-flex align-items-center justify-content-center border-opacity-25"
+                style="width: 40px; height: 40px;" title="Ver Hoja de Cálculo">
+                <i class="bi bi-file-earmark-spreadsheet" style="font-size: 1.2rem;"></i>
+            </a>
+            <a href="monitor.html"
+                class="btn btn-outline-light btn-sm rounded-circle d-flex align-items-center justify-content-center border-opacity-25"
+                style="width: 40px; height: 40px;" title="Ir al Monitor">
+                <i class="bi bi-activity" style="font-size: 1.2rem;"></i>
+            </a>
+        </div>
+
+    </div>
     </header>
 
     <!-- Status Dashboard -->
@@ -360,215 +368,236 @@
                     </div>
 
                     <div class="form-floating mb-3">
-                    <div class="mb-3">
-                        <label for="confirmResponsable" class="form-label fw-bold mb-2">Responsable del Turno</label>
-                        <input type="text" class="form-control" id="confirmResponsable" placeholder="Ingrese nombre del responsable"
-                            required>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                    <div class="mb-3">
-                        <label for="authPin" class="form-label fw-bold mb-2">
-                            <i class="bi bi-key-fill"></i> PIN de Autorización (4 dígitos)
-                        </label>
-                        <input type="password" class="form-control" id="authPin" placeholder="Ingrese PIN de 4 dígitos" maxlength="4"
-                            inputmode="numeric" required autocomplete="off">
-                    </div>
-
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-secondary flex-fill" data-bs-dismiss="modal">
-                            <i class="bi bi-pencil"></i> Editar
-                        </button>
-                        <button type="button" class="btn btn-success flex-fill" id="btnFinalSend" onclick="sendData()">
-                            <i class="bi bi-check-circle"></i> Enviar Definitivo
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para Cambiar PIN -->
-    <div class="modal fade" id="changePinModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content glass-modal">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="bi bi-shield-lock"></i> Cambiar PIN de Autorización
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle-fill"></i>
-                        <strong>Acceso Restringido</strong>
-                        <p class="small mb-0 mt-1">Requiere contraseña de administrador para cambiar el PIN.</p>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="adminPassForPin" placeholder="Password Admin"
-                            required autocomplete="off">
-                        <label>Contraseña de Administrador</label>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="currentPinInput" placeholder="PIN Actual"
-                            maxlength="4" inputmode="numeric" required autocomplete="off">
-                        <label>PIN Actual (4 dígitos)</label>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="newPinInput" placeholder="Nuevo PIN"
-                            maxlength="4" inputmode="numeric" required autocomplete="off">
-                        <label>Nuevo PIN (4 dígitos)</label>
-                    </div>
-
-                    <div class="form-floating">
-                        <input type="password" class="form-control" id="confirmNewPinInput" placeholder="Confirmar PIN"
-                            maxlength="4" inputmode="numeric" required autocomplete="off">
-                        <label>Confirmar Nuevo PIN</label>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="submitPinChange()">
-                        <i class="bi bi-check-circle"></i> Cambiar PIN
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- History Modal -->
-    <div class="modal fade" id="historyModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content glass-modal">
-                <div class="modal-header border-bottom-0 pb-0">
-                    <h5 class="modal-title fw-bold text-primary">
-                        <i class="bi bi-clock-history me-2"></i>Último Registro
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body pt-2">
-                    <div class="text-center mb-3">
-                        <div class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3 mb-2">
-                            <i class="bi bi-calendar-event me-1"></i> <span id="histTimestamp" class="fw-bold">--</span>
+                        <div class="mb-3">
+                            <label for="confirmResponsable" class="form-label fw-bold mb-2">Responsable del
+                                Turno</label>
+                            <input type="text" class="form-control" id="confirmResponsable"
+                                placeholder="Ingrese nombre del responsable" required>
                         </div>
-                        <h6 class="text-muted small text-uppercase ls-1">Responsable</h6>
-                        <p id="histResponsable" class="fw-bold fs-5 mb-0 text-dark">--</p>
-                    </div>
-                    <hr class="opacity-10">
-                    <div id="histContent" class="d-flex flex-column gap-2">
-                        <!-- Content injected via JS -->
-                        <div class="text-center text-muted py-4">
-                            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                            <p class="small mt-2">Cargando detalles...</p>
+
+                        <div class="form-floating mb-3">
+                            <div class="mb-3">
+                                <label for="authPin" class="form-label fw-bold mb-2">
+                                    <i class="bi bi-key-fill"></i> PIN de Autorización (4 dígitos)
+                                </label>
+                                <input type="password" class="form-control" id="authPin"
+                                    placeholder="Ingrese PIN de 4 dígitos" maxlength="4" inputmode="numeric" required
+                                    autocomplete="off">
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-secondary flex-fill" data-bs-dismiss="modal">
+                                    <i class="bi bi-pencil"></i> Editar
+                                </button>
+                                <button type="button" class="btn btn-success flex-fill" id="btnFinalSend"
+                                    onclick="sendData()">
+                                    <i class="bi bi-check-circle"></i> Enviar Definitivo
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer border-top-0">
-                    <button type="button" class="btn btn-outline-secondary w-100 rounded-pill"
-                        data-bs-dismiss="modal">Cerrar</button>
+            </div>
+
+            <!-- Modal para Cambiar PIN -->
+            <div class="modal fade" id="changePinModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content glass-modal">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="bi bi-shield-lock"></i> Cambiar PIN de Autorización
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                <strong>Acceso Restringido</strong>
+                                <p class="small mb-0 mt-1">Requiere contraseña de administrador para cambiar el PIN.</p>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control" id="adminPassForPin"
+                                    placeholder="Password Admin" required autocomplete="off">
+                                <label>Contraseña de Administrador</label>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control" id="currentPinInput"
+                                    placeholder="PIN Actual" maxlength="4" inputmode="numeric" required
+                                    autocomplete="off">
+                                <label>PIN Actual (4 dígitos)</label>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control" id="newPinInput" placeholder="Nuevo PIN"
+                                    maxlength="4" inputmode="numeric" required autocomplete="off">
+                                <label>Nuevo PIN (4 dígitos)</label>
+                            </div>
+
+                            <div class="form-floating">
+                                <input type="password" class="form-control" id="confirmNewPinInput"
+                                    placeholder="Confirmar PIN" maxlength="4" inputmode="numeric" required
+                                    autocomplete="off">
+                                <label>Confirmar Nuevo PIN</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" onclick="submitPinChange()">
+                                <i class="bi bi-check-circle"></i> Cambiar PIN
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Admin Logic -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="theme-pwa.js"></script>
-    <script src="app.js?v=5"></script>
+            <!-- History Modal -->
+            <div class="modal fade" id="historyModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content glass-modal">
+                        <div class="modal-header border-bottom-0 pb-0">
+                            <h5 class="modal-title fw-bold text-primary">
+                                <i class="bi bi-clock-history me-2"></i>Último Registro
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body pt-2">
+                            <div class="text-center mb-3">
+                                <div class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3 mb-2">
+                                    <i class="bi bi-calendar-event me-1"></i> <span id="histTimestamp"
+                                        class="fw-bold">--</span>
+                                </div>
+                                <h6 class="text-muted small text-uppercase ls-1">Responsable</h6>
+                                <p id="histResponsable" class="fw-bold fs-5 mb-0 text-dark">--</p>
+                            </div>
+                            <hr class="opacity-10">
+                            <div id="histContent" class="d-flex flex-column gap-2">
+                                <!-- Content injected via JS -->
+                                <div class="text-center text-muted py-4">
+                                    <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                                    <p class="small mt-2">Cargando detalles...</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-top-0">
+                            <button type="button" class="btn btn-outline-secondary w-100 rounded-pill"
+                                data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <script>
-        // Security: Clear PIN when modal is closed/cancelled
-        const confirmModalElement = document.getElementById('confirmModal');
-        confirmModalElement.addEventListener('hidden.bs.modal', function () {
-            document.getElementById('authPin').value = '';
-        });
+            <!-- Admin Logic -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="theme-pwa.js"></script>
+            <!-- Logic -->
+            <script src="app.js?v=5"></script>
+            <script>
+                // Remove Loader when everything is ready
+                window.addEventListener('load', () => {
+                    // Ensure fonts are loaded before revealing
+                    document.fonts.ready.then(() => {
+                        const loader = document.getElementById('initial-loader');
+                        if (loader) {
+                            // Small buffer to ensure visual stability
+                            setTimeout(() => {
+                                loader.style.opacity = '0';
+                                setTimeout(() => loader.remove(), 500);
+                            }, 300);
+                        }
+                    });
+                });
+            </script>
 
-        // Mobile: Prevent accidental navigation/close
-        let formHasData = false;
-        document.getElementById('registroForm').addEventListener('input', () => {
-            formHasData = true;
-        });
+            <script>
+                // Security: Clear PIN when modal is closed/cancelled
+                const confirmModalElement = document.getElementById('confirmModal');
+                confirmModalElement.addEventListener('hidden.bs.modal', function () {
+                    document.getElementById('authPin').value = '';
+                });
 
-        // Warn before leaving page with unsaved data
-        window.addEventListener('beforeunload', (e) => {
-            if (formHasData) {
-                e.preventDefault();
-                e.returnValue = '';
-                return '';
-            }
-        });
+                // Mobile: Prevent accidental navigation/close
+                let formHasData = false;
+                document.getElementById('registroForm').addEventListener('input', () => {
+                    formHasData = true;
+                });
 
-        // Handle back button on mobile
-        window.addEventListener('popstate', (e) => {
-            if (formHasData) {
-                if (!confirm('¿Seguro que quieres salir? Los datos no guardados se perderán.')) {
-                    window.history.pushState(null, '', window.location.href);
+                // Warn before leaving page with unsaved data
+                window.addEventListener('beforeunload', (e) => {
+                    if (formHasData) {
+                        e.preventDefault();
+                        e.returnValue = '';
+                        return '';
+                    }
+                });
+
+                // Handle back button on mobile
+                window.addEventListener('popstate', (e) => {
+                    if (formHasData) {
+                        if (!confirm('¿Seguro que quieres salir? Los datos no guardados se perderán.')) {
+                            window.history.pushState(null, '', window.location.href);
+                        }
+                    }
+                });
+
+                // Push initial state for back button handling
+                window.history.pushState(null, '', window.location.href);
+                // Service Worker Registration
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('./service-worker.js');
                 }
-            }
-        });
 
-        // Push initial state for back button handling
-        window.history.pushState(null, '', window.location.href);
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./service-worker.js');
-        }
+                // PWA Install Button Logic
+                let deferredPrompt;
+                const installContainer = document.getElementById('installContainer');
+                const installButton = document.getElementById('installButton');
 
-        // PWA Install Button Logic
-        let deferredPrompt;
-        const installContainer = document.getElementById('installContainer');
-        const installButton = document.getElementById('installButton');
+                // Show button if app is not installed
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    installContainer.style.display = 'block';
+                });
 
-        // Show button if app is not installed
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installContainer.style.display = 'block';
-        });
+                // Handle install button click
+                installButton.addEventListener('click', async () => {
+                    if (!deferredPrompt) return;
 
-        // Handle install button click
-        installButton.addEventListener('click', async () => {
-            if (!deferredPrompt) return;
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
 
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        installContainer.style.display = 'none';
+                    }
 
-            if (outcome === 'accepted') {
-                installContainer.style.display = 'none';
-            }
+                    deferredPrompt = null;
+                });
 
-            deferredPrompt = null;
-        });
+                // Hide button if app is already installed
+                window.addEventListener('appinstalled', () => {
+                    installContainer.style.display = 'none';
+                    deferredPrompt = null;
+                });
 
-        // Hide button if app is already installed
-        window.addEventListener('appinstalled', () => {
-            installContainer.style.display = 'none';
-            deferredPrompt = null;
-        });
+                // iOS Safari detection - show install instructions
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
 
-        // iOS Safari detection - show install instructions
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+                if (isIOS && !isStandalone) {
+                    // For iOS, show the button with different behavior
+                    installContainer.style.display = 'block';
+                    installButton.onclick = () => {
+                        alert('Para instalar en iOS: \n1. Toca el botón "Compartir" \n2. Selecciona "Agregar a pantalla de inicio"');
+                    };
+                }
 
-        if (isIOS && !isStandalone) {
-            // For iOS, show the button with different behavior
-            installContainer.style.display = 'block';
-            installButton.onclick = () => {
-                alert('Para instalar en iOS: \n1. Toca el botón "Compartir" \n2. Selecciona "Agregar a pantalla de inicio"');
-            };
-        }
-
-        // Hide button if already in standalone mode
-        if (isStandalone) {
-            installContainer.style.display = 'none';
-        }
-    </script>
+                // Hide button if already in standalone mode
+                if (isStandalone) {
+                    installContainer.style.display = 'none';
+                }
+            </script>
 </body>
 
 </html>
-
-
