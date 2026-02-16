@@ -1,5 +1,5 @@
 ﻿// Enterprise-Grade Production Build v6.0 - Ultra Robust System
-const API_URL = "https://script.google.com/macros/s/AKfycbzCVzAxRBbXzJP1LQFOodK-UZ7bGMqG5h4xdHYMvVDTNLiVLf2jbMf9azAiLMlXq0yrMw/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxEa10SS3owHtaUg28CPjN_WPjBtxojFsE_54a4MLx3MFsdkpaGc_npw6RAVNFtlt5Trw/exec";
 const PASSWORD_ADMIN = "mantencioncermaq";
 const APP_VERSION = "6.0.0";
 
