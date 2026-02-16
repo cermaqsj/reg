@@ -298,6 +298,18 @@ body::before {
     color: var(--text-light);
 }
 
+/* Placeholder styling for non-floating inputs */
+.custom-input::placeholder,
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+    opacity: 1;
+}
+
+[data-theme="light"] .custom-input::placeholder,
+[data-theme="light"] .form-control::placeholder {
+    color: rgba(71, 85, 105, 0.6) !important;
+}
+
 /* --- BUTTONS --- */
 .custom-btn,
 .btn-primary {
