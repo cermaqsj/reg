@@ -6,7 +6,8 @@ const APP_VERSION = "6.0.0";
 // Service Worker Update Handling
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-        window.location.reload();
+        // window.location.reload(); // Prevent double-load glitch
+        console.log('[SW] New service worker activated. Refresh for latest version.');
     });
 }
 
