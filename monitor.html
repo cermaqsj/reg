@@ -77,8 +77,41 @@
 
     <!-- MAIN DASHBOARD -->
     <div class="container-fluid px-4" id="mainContainer">
+
+        <!-- Status Dashboard -->
+        <div class="status-dashboard fade-in-down" style="animation-delay: 0.1s; margin-bottom: 1.5rem;">
+            <div class="d-flex align-items-center gap-4 w-100 justify-content-center flex-wrap">
+                <!-- Last Update -->
+                <div class="d-flex align-items-center gap-2">
+                    <div class="bg-primary bg-opacity-10 p-2 rounded-circle text-primary">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div class="d-flex flex-column">
+                        <span class="text-muted small text-uppercase fw-bold"
+                            style="font-size: 0.7rem; letter-spacing: 1px;">Última Actualización</span>
+                        <span id="lastUpdate" class="fw-bold fs-5">--/--/---- --:--</span>
+                    </div>
+                </div>
+
+                <!-- Separator -->
+                <div class="d-none d-md-block border-end border-secondary opacity-25" style="height: 30px;"></div>
+
+                <!-- Responsable -->
+                <div class="d-flex align-items-center gap-2">
+                    <div class="bg-success bg-opacity-10 p-2 rounded-circle text-success">
+                        <i class="bi bi-person-check-fill"></i>
+                    </div>
+                    <div class="d-flex flex-column">
+                        <span class="text-muted small text-uppercase fw-bold"
+                            style="font-size: 0.7rem; letter-spacing: 1px;">Responsable</span>
+                        <span id="lastResponsable" class="fw-bold fs-5">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Dashboard Grid injected here -->
-        <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="d-flex justify-content-center align-items-center h-100" id="loadingSpinner">
             <div class="spinner-border text-primary opacity-50" role="status"></div>
         </div>
     </div>
@@ -128,12 +161,27 @@
         }
 
         function renderDashboard(data) {
+            // Remove spinner if present
+            const spinner = document.getElementById('loadingSpinner');
+            if (spinner) spinner.style.display = 'none';
+
             const lastUpdateEl = document.getElementById('lastUpdate');
             if (lastUpdateEl) {
                 lastUpdateEl.textContent = data.timestamp || '--/--/---- --:--';
             }
 
-            const container = document.getElementById('mainContainer');
+            const lastResponsableEl = document.getElementById('lastResponsable');
+            if (lastResponsableEl) {
+                lastResponsableEl.textContent = data.responsable || '--';
+            }
+
+            // Create grid container if it doesn't exist (to preserve the header)
+            let gridContainer = document.getElementById('gridContainer');
+            if (!gridContainer) {
+                gridContainer = document.createElement('div');
+                gridContainer.id = 'gridContainer';
+                document.getElementById('mainContainer').appendChild(gridContainer);
+            }
             const raw = data.data || [];
             const findVal = (key) => {
                 const item = raw.find(r => r[0].includes(key));
@@ -209,7 +257,7 @@
             });
 
             html += '</div>';
-            container.innerHTML = html;
+            gridContainer.innerHTML = html;
         }
 
         fetchData();
