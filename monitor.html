@@ -119,50 +119,48 @@
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbzCVzAxRBbXzJP1LQFOodK-UZ7bGMqG5h4xdHYMvVDTNLiVLf2jbMf9azAiLMlXq0yrMw/exec";
         const REFRESH_INTERVAL = 30000;
-        let timerWidth = 0;
-        let timerInterval;
-
-        function startTimer() {
-            clearInterval(timerInterval);
-            timerWidth = 0;
-            const step = 100 / (REFRESH_INTERVAL / 1000);
-            document.getElementById('refreshTimer').style.width = '0%';
-            timerInterval = setInterval(() => {
-                timerWidth += step;
-                document.getElementById('refreshTimer').style.width = timerWidth + '%';
-                if (timerWidth >= 100) clearInterval(timerInterval);
-            }, 1000);
-        }
 
         async function fetchData() {
-            startTimer();
-            const btn = document.getElementById('btnRefresh');
-            let icon = null;
+            // Fake progress to 90%
+            setTimeout(() => timerEl.style.width = '90%', 50);
+        }
+
+        const btn = document.getElementById('btnRefresh');
+        let icon = null;
+
+        if (btn) {
+            icon = btn.querySelector('i');
+            btn.disabled = true;
+            if (icon) icon.classList.add('spin-anim');
+        }
+
+        try {
+            const response = await fetch(API_URL + "?action=latest");
+            const result = await response.json();
+
+            // Update Connectivity Status
+            updateConnectionStatus(true);
+
+            if (result.error) return;
+            renderDashboard(result);
+        } catch (error) {
+            console.error(error);
+            updateConnectionStatus(false);
+        } finally {
+            // Complete Loading Bar
+            if (timerEl) {
+                timerEl.style.width = '100%';
+                setTimeout(() => {
+                    timerEl.style.opacity = '0';
+                    setTimeout(() => timerEl.style.width = '0%', 300); // Reset for next time
+                }, 500);
+            }
 
             if (btn) {
-                icon = btn.querySelector('i');
-                btn.disabled = true;
-                if (icon) icon.classList.add('spin-anim');
+                btn.disabled = false;
+                if (icon) icon.classList.remove('spin-anim');
             }
-
-            try {
-                const response = await fetch(API_URL + "?action=latest");
-                const result = await response.json();
-
-                // Update Connectivity Status
-                updateConnectionStatus(true);
-
-                if (result.error) return;
-                renderDashboard(result);
-            } catch (error) {
-                console.error(error);
-                updateConnectionStatus(false);
-            } finally {
-                if (btn) {
-                    btn.disabled = false;
-                    if (icon) icon.classList.remove('spin-anim');
-                }
-            }
+        }
         }
 
         function updateConnectionStatus(isOnline) {
