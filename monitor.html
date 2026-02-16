@@ -324,9 +324,31 @@
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./monitor-sw.js')
-                    .then(reg => console.log('Service Worker registered'))
-                    .catch(err => console.log('Service Worker registration failed:', err));
+                const registerSW = () => {
+                    navigator.serviceWorker.register('./monitor-sw.js')
+                        .then(reg => {
+                            console.log('Service Worker registered');
+                            // Smart Switch: If update pending, keep loader
+                            if (reg.waiting || reg.installing) {
+                                console.log('Update pending, keeping loader...');
+                                // Backup timeout
+                                setTimeout(removeInitialLoader, 4000);
+                            } else {
+                                removeInitialLoader();
+                            }
+                        })
+                        .catch(err => {
+                            console.log('Service Worker registration failed:', err);
+                            removeInitialLoader();
+                        });
+                };
+
+                if (navigator.serviceWorker.controller) {
+                    registerSW();
+                } else {
+                    // First load or no SW active yet
+                    registerSW();
+                }
             });
         }
     </script>
