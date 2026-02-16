@@ -148,10 +148,15 @@
             try {
                 const response = await fetch(API_URL + "?action=latest");
                 const result = await response.json();
+
+                // Update Connectivity Status
+                updateConnectionStatus(true);
+
                 if (result.error) return;
                 renderDashboard(result);
             } catch (error) {
                 console.error(error);
+                updateConnectionStatus(false);
             } finally {
                 if (btn) {
                     btn.disabled = false;
@@ -159,6 +164,32 @@
                 }
             }
         }
+
+        function updateConnectionStatus(isOnline) {
+            const statusText = document.getElementById('statusText');
+            const statusDot = document.querySelector('.status-dot');
+            const container = statusText.parentElement;
+
+            if (isOnline) {
+                statusText.textContent = 'ONLINE';
+                statusText.className = 'small text-success fw-bold';
+                if (statusDot) statusDot.style.backgroundColor = 'var(--success)';
+                if (container) {
+                    container.className = 'd-flex align-items-center gap-2 px-2 py-1 border border-success border-opacity-25 bg-success bg-opacity-10 rounded-pill';
+                }
+            } else {
+                statusText.textContent = 'OFFLINE';
+                statusText.className = 'small text-danger fw-bold';
+                if (statusDot) statusDot.style.backgroundColor = 'var(--danger)';
+                if (container) {
+                    container.className = 'd-flex align-items-center gap-2 px-2 py-1 border border-danger border-opacity-25 bg-danger bg-opacity-10 rounded-pill';
+                }
+            }
+        }
+
+        // Network Listeners
+        window.addEventListener('online', () => updateConnectionStatus(true));
+        window.addEventListener('offline', () => updateConnectionStatus(false));
 
         function renderDashboard(data) {
             // Remove spinner if present
