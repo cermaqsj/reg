@@ -305,9 +305,21 @@ body::before {
     opacity: 1;
 }
 
+/* FIX: Hide placeholder in floating labels to prevent double text */
+.form-floating .custom-input::placeholder,
+.form-floating .form-control::placeholder {
+    color: transparent !important;
+}
+
 [data-theme="light"] .custom-input::placeholder,
 [data-theme="light"] .form-control::placeholder {
     color: rgba(71, 85, 105, 0.6) !important;
+}
+
+/* Restore transparent for floating in light mode too just in case */
+[data-theme="light"] .form-floating .custom-input::placeholder,
+[data-theme="light"] .form-floating .form-control::placeholder {
+    color: transparent !important;
 }
 
 /* --- BUTTONS --- */
@@ -441,6 +453,7 @@ body::before {
         grid-template-columns: 1fr;
     }
 }
+
 /* --- LIGHT THEME OVERRIDES --- */
 [data-theme='light'] {
     --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
@@ -484,8 +497,15 @@ body::before {
 }
 
 @keyframes gradientFlow {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
 }
 
 
@@ -520,7 +540,8 @@ body::before {
 }
 
 .group-header {
-    background: rgba(10, 25, 47, 0.5); /* Darker header within card */
+    background: rgba(10, 25, 47, 0.5);
+    /* Darker header within card */
     padding: 16px 20px;
     border-bottom: 1px solid var(--glass-border);
     font-size: 0.9rem;
@@ -583,7 +604,7 @@ body::before {
     font-weight: 700;
     color: var(--text);
     line-height: 1.2;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 [data-theme='light'] .val-text {
@@ -620,6 +641,7 @@ body::before {
 [data-theme='light'] .btn-outline-light i {
     color: var(--text-light);
 }
+
 [data-theme='light'] .btn-outline-light:hover i {
     color: white;
 }
@@ -647,6 +669,7 @@ body::before {
 
 /* --- OPTIMIZATION FOR LAPTOPS (1366x768) --- */
 @media (min-width: 1200px) and (max-width: 1450px) {
+
     /* Force 4 columns to fit width */
     .dashboard-grid {
         grid-template-columns: repeat(4, 1fr) !important;
@@ -709,15 +732,19 @@ body::before {
 
 /* --- INSTALL BUTTON TEXT FIX --- */
 .install-title {
-    color: white; /* Default Dark Mode */
+    color: white;
+    /* Default Dark Mode */
 }
+
 .install-subtitle {
-    color: rgba(255, 255, 255, 0.5); /* Default Dark Mode */
+    color: rgba(255, 255, 255, 0.5);
+    /* Default Dark Mode */
 }
 
 [data-theme='light'] .install-title {
     color: var(--primary-dark);
 }
+
 [data-theme='light'] .install-subtitle {
     color: var(--text-light);
 }
@@ -742,7 +769,8 @@ body::before {
 }
 
 .admin-trigger {
-    font-size: 1.6rem; /* Larger icons */
+    font-size: 1.6rem;
+    /* Larger icons */
     opacity: 0.7;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -787,11 +815,13 @@ body::before {
 [data-theme='light'] .bottom-actions {
     background: rgba(255, 255, 255, 0.3);
 }
-[data-theme='light'] .admin-trigger, 
+
+[data-theme='light'] .admin-trigger,
 [data-theme='light'] .btn-update-compact {
     color: var(--text-light);
 }
-[data-theme='light'] .admin-trigger:hover, 
+
+[data-theme='light'] .admin-trigger:hover,
 [data-theme='light'] .btn-update-compact:hover {
     color: var(--primary-dark);
 }
@@ -799,7 +829,8 @@ body::before {
 
 /* --- FINAL AESTHETIC POLISH --- */
 .dashboard-grid {
-    justify-content: center; /* Center cards horizontally */
+    justify-content: center;
+    /* Center cards horizontally */
     max-width: 1920px;
     margin: 0 auto;
 }
@@ -807,8 +838,8 @@ body::before {
 /* Enhanced Glass Cards */
 .group-card {
     backdrop-filter: blur(20px) saturate(180%);
-    box-shadow: 
-        0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
         0 2px 4px -1px rgba(0, 0, 0, 0.06),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -821,9 +852,9 @@ body::before {
 
 /* Interactive Data Items */
 .data-item {
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
-                box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-                background 0.2s ease;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+        background 0.2s ease;
 }
 
 .data-item:hover {
@@ -843,7 +874,7 @@ body::before {
         padding: 0.75rem 0 !important;
     }
 
-    .glass-header > div {
+    .glass-header>div {
         flex-direction: column !important;
         align-items: center !important;
         gap: 0.5rem;
@@ -866,12 +897,12 @@ body::before {
     }
 
     /* Remove absolute positioning and center buttons */
-    .glass-header > div > div:last-child {
+    .glass-header>div>div:last-child {
         position: static !important;
     }
 
     /* Center the logo/text container */
-    .glass-header > div > div:first-child {
+    .glass-header>div>div:first-child {
         flex-direction: column !important;
         align-items: center !important;
         gap: 0.5rem !important;
@@ -925,9 +956,11 @@ body::before {
     0% {
         box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
     }
+
     70% {
         box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
     }
+
     100% {
         box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
     }
@@ -937,9 +970,11 @@ body::before {
     0% {
         box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
     }
+
     70% {
         box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
     }
+
     100% {
         box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
     }
@@ -980,9 +1015,12 @@ body::before {
 }
 
 @keyframes badge-pulse {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.8;
     }
@@ -1000,12 +1038,12 @@ body::before {
         width: 10px;
         height: 10px;
     }
-    
+
     .pending-badge {
         font-size: 0.7rem;
         padding: 3px 8px;
     }
-    
+
     .pending-badge i {
         font-size: 0.8rem;
     }
@@ -1034,10 +1072,17 @@ body::before {
 .glass-modal .modal-body,
 .glass-modal .modal-body *,
 .glass-modal .modal-footer,
-.glass-modal h1, .glass-modal h2, .glass-modal h3, 
-.glass-modal h4, .glass-modal h5, .glass-modal h6,
-.glass-modal p, .glass-modal span, .glass-modal div,
-.glass-modal label, .glass-modal small,
+.glass-modal h1,
+.glass-modal h2,
+.glass-modal h3,
+.glass-modal h4,
+.glass-modal h5,
+.glass-modal h6,
+.glass-modal p,
+.glass-modal span,
+.glass-modal div,
+.glass-modal label,
+.glass-modal small,
 .glass-modal .text-muted,
 .glass-modal .small {
     color: #f1f5f9 !important;
@@ -1062,16 +1107,16 @@ body::before {
 [data-theme='light'] .glass-modal .modal-body,
 [data-theme='light'] .glass-modal .modal-body *,
 [data-theme='light'] .glass-modal .modal-footer,
-[data-theme='light'] .glass-modal h1, 
-[data-theme='light'] .glass-modal h2, 
+[data-theme='light'] .glass-modal h1,
+[data-theme='light'] .glass-modal h2,
 [data-theme='light'] .glass-modal h3,
-[data-theme='light'] .glass-modal h4, 
-[data-theme='light'] .glass-modal h5, 
+[data-theme='light'] .glass-modal h4,
+[data-theme='light'] .glass-modal h5,
 [data-theme='light'] .glass-modal h6,
-[data-theme='light'] .glass-modal p, 
-[data-theme='light'] .glass-modal span, 
+[data-theme='light'] .glass-modal p,
+[data-theme='light'] .glass-modal span,
 [data-theme='light'] .glass-modal div,
-[data-theme='light'] .glass-modal label, 
+[data-theme='light'] .glass-modal label,
 [data-theme='light'] .glass-modal small,
 [data-theme='light'] .glass-modal .text-muted,
 [data-theme='light'] .glass-modal .small {
@@ -1149,8 +1194,6 @@ body::before {
 }
 
 /* Hide any floating labels that might still exist */
-.glass-modal .form-floating > label {
+.glass-modal .form-floating>label {
     display: none !important;
 }
-
-
