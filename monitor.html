@@ -121,46 +121,52 @@
         const REFRESH_INTERVAL = 30000;
 
         async function fetchData() {
-            // Fake progress to 90%
-            setTimeout(() => timerEl.style.width = '90%', 50);
-        }
-
-        const btn = document.getElementById('btnRefresh');
-        let icon = null;
-
-        if (btn) {
-            icon = btn.querySelector('i');
-            btn.disabled = true;
-            if (icon) icon.classList.add('spin-anim');
-        }
-
-        try {
-            const response = await fetch(API_URL + "?action=latest");
-            const result = await response.json();
-
-            // Update Connectivity Status
-            updateConnectionStatus(true);
-
-            if (result.error) return;
-            renderDashboard(result);
-        } catch (error) {
-            console.error(error);
-            updateConnectionStatus(false);
-        } finally {
-            // Complete Loading Bar
+            // Show Loading Bar
+            const timerEl = document.getElementById('refreshTimer');
             if (timerEl) {
-                timerEl.style.width = '100%';
-                setTimeout(() => {
-                    timerEl.style.opacity = '0';
-                    setTimeout(() => timerEl.style.width = '0%', 300); // Reset for next time
-                }, 500);
+                timerEl.style.width = '0%';
+                timerEl.style.opacity = '1';
+                timerEl.style.transition = 'width 2s ease-in-out';
+                // Fake progress to 90%
+                setTimeout(() => timerEl.style.width = '90%', 50);
             }
+
+            const btn = document.getElementById('btnRefresh');
+            let icon = null;
 
             if (btn) {
-                btn.disabled = false;
-                if (icon) icon.classList.remove('spin-anim');
+                icon = btn.querySelector('i');
+                btn.disabled = true;
+                if (icon) icon.classList.add('spin-anim');
             }
-        }
+
+            try {
+                const response = await fetch(API_URL + "?action=latest");
+                const result = await response.json();
+
+                // Update Connectivity Status
+                updateConnectionStatus(true);
+
+                if (result.error) return;
+                renderDashboard(result);
+            } catch (error) {
+                console.error(error);
+                updateConnectionStatus(false);
+            } finally {
+                // Complete Loading Bar
+                if (timerEl) {
+                    timerEl.style.width = '100%';
+                    setTimeout(() => {
+                        timerEl.style.opacity = '0';
+                        setTimeout(() => timerEl.style.width = '0%', 300); // Reset for next time
+                    }, 500);
+                }
+
+                if (btn) {
+                    btn.disabled = false;
+                    if (icon) icon.classList.remove('spin-anim');
+                }
+            }
         }
 
         function updateConnectionStatus(isOnline) {
