@@ -158,7 +158,10 @@
                     timerEl.style.width = '100%';
                     setTimeout(() => {
                         timerEl.style.opacity = '0';
-                        setTimeout(() => timerEl.style.width = '0%', 300); // Reset for next time
+                        setTimeout(() => {
+                            timerEl.style.transition = 'none'; // Disable transition for instant reset
+                            timerEl.style.width = '0%';
+                        }, 300);
                     }, 500);
                 }
 
